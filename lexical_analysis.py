@@ -12,6 +12,11 @@ tokens = (
 t_ignore = ' ' # shorthand way of passing over all whitespace
 
 # rules. order is important
+def t_newline(token):
+    r'\n'
+    token.lexer.lineno += 1 # increment the line number property in the lexer
+    pass # but we don't want the token in the results
+
 def t_LANGLESLASH(token): # needs to preceed LANGLE
     r'</'
     return token
@@ -56,10 +61,11 @@ def t_WORD(token):
 htmllexer = lex.lex() # calls the lexer generator to instantiate a lexer
 
 #call the lexer
-webpage = 'This is <b>my</b> webpage!'
+webpage = '''This is <b>my</b>
+          webpage!'''
 htmllexer.input(webpage) # lex the webpage
 
 while True:
     tok = htmllexer.token() # get the next token; I guess it's iterable
     if not tok: break
-    print tok 
+    print tok
