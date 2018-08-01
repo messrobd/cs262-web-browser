@@ -66,6 +66,15 @@ def t_INTEGER(token):
     token.value = int(token.value) # tranform token from string to number
     return token
 
+def t_NUMBER(token):
+    r'-?[0-9]+\.?[0-9]*'
+    token.value = float(token.value)
+    return token
+
+def t_IDENTIFIER(token):
+    r'[a-zA-Z][a-zA-Z_]*'
+    return token
+
 not used (yet) '''
 
 def t_WORD(token):
