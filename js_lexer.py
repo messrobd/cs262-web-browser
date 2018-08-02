@@ -85,19 +85,19 @@ def t_RETURN(token):
     return token
 
 def t_LPAREN(token):
-    r'('
+    r'\('
     return token
 
 def t_RPAREN(token):
-    r')'
+    r'\)'
     return token
 
 def t_LBRACE(token):
-    r'{'
+    r'\{'
     return token
 
 def t_RBRACE(token):
-    r'}'
+    r'\}'
     return token
 
 def t_COMMA(token):
@@ -167,3 +167,28 @@ def t_TRUE(token):
 def t_FALSE(token):
     r'false'
     return token
+
+#tests
+lexer = lex.lex()
+
+def test_lexer(input_string): #copied this useful func from exercise
+  lexer.input(input_string)
+  result = [ ]
+  while True:
+    tok = lexer.token()
+    if not tok: break
+    result = result + [tok.type]
+  return result
+
+tokens = """ - !  && () * , / ; { || } + < <= = == > >= else false function
+if return true var """
+
+print test_lexer(tokens)
+
+comments = """
+if // else mystery
+=/*=*/=
+true /* false
+*/ return"""
+
+print test_lexer(comments)
