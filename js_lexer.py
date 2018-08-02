@@ -38,6 +38,32 @@ tokens = (
         'VAR',          # var
 )
 
+states = (
+        ('jscomment', 'exclusive'),
+)
+
+t_ignore = ' \t\v\r' # whitespace
+
+def t_eol_comment(token):
+    r'//[^\n]*'
+    pass
+
+def t_jscomment(token):
+    r'/\*'
+    token.lexer.begin('jscomment')
+
+def t_jscomment_end(token):
+    r'\*/'
+    token.lexer.lineno += token.value.count('\n')
+    token.lexer.begin('INITIAL')
+
+def t_jscomment_error(token):
+    token.lexer.skip(1)
+
+def t_newline(t):
+        r'\n'
+        t.lexer.lineno += 1
+
 def t_VAR(token):
     r'var'
     return token
