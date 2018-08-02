@@ -7,7 +7,6 @@ NUMBER and STRING
 also handle // eol comments and /* */ multiline comments '''
 
 import ply.lex as lex
-import re
 
 tokens = (
         'ANDAND',       # &&
@@ -36,6 +35,9 @@ tokens = (
         'TIMES',        # *
         'TRUE',         # true
         'VAR',          # var
+        'IDENTIFIER',
+        'NUMBER',
+        'STRING',
 )
 
 states = (
@@ -67,6 +69,20 @@ def t_jscomment_error(token):
 def t_newline(t):
         r'\n'
         t.lexer.lineno += 1
+
+def t_STRING(token):
+    r'"(?:[^"\\]|(?:\\.))*"'
+    token.value = token.value[1:-1]
+    return token
+
+def t_IDENTIFIER(token):
+    r'[a-zA-Z][a-zA-Z_]*'
+    return token
+
+def t_NUMBER(token):
+    r'-?[0-9]+\.?[0-9]*'
+    token.value = float(token.value)
+    return token
 
 def t_VAR(token):
     r'var'
@@ -172,4 +188,22 @@ def t_FALSE(token):
     r'false'
     return token
 
-lexer = lex.lex() 
+'''
+numbers and strings (lesson 7: prob set 2, #4)
+
+add token definitions for numbers, identifiers (names of variables and
+functions) and strings. definitions:
+  * identifier must start with an upper or lowercase ch. it can then contain any
+  number of upper or lowercase ch's, with or without underscores
+  * number is one or more digits and may start with a - Return value miust be a
+  float
+  * string is zero or more ch contained in double quotes. a string may contain
+  escaped characters, eg \" does not end a string. return the string minus
+  enclosing quotes
+
+remember: to get python to evaluate an escape character you have to unescape it
+  * test "a \"escape\" b" ==> "a \\"escape\\" b" to test correctly
+
+definitions had to be spliced into list to get the rules right '''
+
+lexer = lex.lex()

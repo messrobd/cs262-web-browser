@@ -7,7 +7,7 @@ def test_lexer(input_string): #copied this useful func from exercise
   while True:
     tok = lexer.token()
     if not tok: break
-    result = result + [tok.type]
+    result = result + [tok.type, tok.value]
   return result
 
 tokens = """ - !  && () * , / ; { || } + < <= = == > >= else false function
@@ -22,3 +22,10 @@ true /* false
 */ return"""
 
 print test_lexer(comments)
+
+input1 = 'some_identifier -12.34 "a \\"escape\\" b"'
+print test_lexer(input1)
+
+
+input2 = '-12x34'
+print test_lexer(input2)
