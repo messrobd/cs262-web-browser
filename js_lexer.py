@@ -43,6 +43,10 @@ states = (
 )
 
 t_ignore = ' \t\v\r' # whitespace
+t_jscomment_ignore = ' \t\v\r' # whitespace
+
+def t_error(token):
+    token.lexer.skip(1)
 
 def t_eol_comment(token):
     r'//[^\n]*'
@@ -93,11 +97,11 @@ def t_RPAREN(token):
     return token
 
 def t_LBRACE(token):
-    r'\{'
+    r'{'
     return token
 
 def t_RBRACE(token):
-    r'\}'
+    r'}'
     return token
 
 def t_COMMA(token):
