@@ -1,5 +1,6 @@
 import ply.lex as lex
-from js_lexer import lexer
+import js_lexer
+from js_lexer import tokens
 
 def test_lexer(input_string): #copied this useful func from exercise
   lexer.input(input_string)
@@ -10,10 +11,12 @@ def test_lexer(input_string): #copied this useful func from exercise
     result = result + [tok.type, tok.value]
   return result
 
-tokens = """ - !  && () * , / ; { || } + < <= = == > >= else false function
+lexer = lex.lex(module=js_lexer)
+
+test_tokens = """ - !  && () * , / ; { || } + < <= = == > >= else false function
 if return true var """
 
-print test_lexer(tokens)
+print test_lexer(test_tokens)
 
 comments = """
 if // else mystery

@@ -205,5 +205,3 @@ remember: to get python to evaluate an escape character you have to unescape it
   * test "a \"escape\" b" ==> "a \\"escape\\" b" to test correctly
 
 definitions had to be spliced into list to get the rules right '''
-
-lexer = lex.lex()
