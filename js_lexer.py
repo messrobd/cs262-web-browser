@@ -70,15 +70,6 @@ def t_newline(t):
         r'\n'
         t.lexer.lineno += 1
 
-def t_STRING(token):
-    r'"(?:[^"\\]|(?:\\.))*"'
-    token.value = token.value[1:-1]
-    return token
-
-def t_IDENTIFIER(token):
-    r'[a-zA-Z][a-zA-Z_]*'
-    return token
-
 def t_NUMBER(token):
     r'-?[0-9]+\.?[0-9]*'
     token.value = float(token.value)
@@ -186,6 +177,15 @@ def t_TRUE(token):
 
 def t_FALSE(token):
     r'false'
+    return token
+
+def t_IDENTIFIER(token):
+    r'[a-zA-Z][a-zA-Z_]*'
+    return token
+
+def t_STRING(token):
+    r'"(?:[^"\\]|(?:\\.))*"'
+    token.value = token.value[1:-1]
     return token
 
 '''
