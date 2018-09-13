@@ -61,18 +61,29 @@ def t_STRING(token):
     return token
 
 '''
+def hex_to_dec(string):
+    hex_digits = string[2:]
+    digit_lookup = '0123456789abcdef'
+    decimal = 0
+    exp = len(hex_digits)-1
+    for h in hex_digits:
+        decimal += digit_lookup.find(h)*16**exp
+        exp -= 1
+    return decimal
+
+def t_NUMBER_hex(token): # from prob set 2
+    r'0x[0-f]+'
+    token.value = hex_to_dec(token.value)
+    token.type = 'NUMBER' # needed because the definition isn't literal
+    return token
+
 def t_INTEGER(token):
     r'[0-9]+'
     token.value = int(token.value) # tranform token from string to number
     return token
 
-def t_NUMBER(token):
-    r'-?[0-9]+\.?[0-9]*'
-    token.value = float(token.value)
-    return token
-
-def t_IDENTIFIER(token):
-    r'[a-zA-Z][a-zA-Z_]*'
+def t_ID(token): # from prob set 2
+    r'[a-zA-Z]+'
     return token
 
 not used (yet) '''
@@ -80,16 +91,3 @@ not used (yet) '''
 def t_WORD(token):
     r'[^<> \n]+' # any number of characters except <, >, ' ' (space) and newline
     return token
-
-# generate the lexer
-htmllexer = lex.lex() # calls the lexer generator to instantiate a lexer
-
-#call the lexer
-webpage = '''This is <b>my</b> <!--bastard-->
-          webpage!'''
-htmllexer.input(webpage) # lex the webpage
-
-while True:
-    tok = htmllexer.token() # get the next token; I guess it's iterable
-    if not tok: break
-    print tok
