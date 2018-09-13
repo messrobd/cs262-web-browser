@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'jsANDAND COMMA DIVIDE ELSE EQUAL EQUALEQUAL FALSE FUNCTION GE GT IDENTIFIER IF LBRACE LE LPAREN LT MINUS NOT NUMBER OROR PLUS RBRACE RETURN RPAREN SEMICOLON STRING TIMES TRUE VARjs : element jsjs : element : FUNCTION IDENTIFIER LPAREN optparams RPAREN compoundstmtelement : stmt SEMICOLONoptparams : paramsoptparams : params : IDENTIFIER COMMA paramsparams : IDENTIFIERcompoundstmt : LBRACE statements RBRACEstatements : stmt SEMICOLON statementsstatements : stmt : IF exp compoundstmtstmt : IF exp compoundstmt ELSE compoundstmtstmt : IDENTIFIER EQUAL expstmt : RETURN expstmt : VAR IDENTIFIER EQUAL expstmt : expexp : IDENTIFIER'
+_lr_signature = 'jsleftORORleftANDANDleftEQUALEQUALleftLTGTLEGEleftPLUSMINUSleftTIMESDIVIDErightNOTANDAND COMMA DIVIDE ELSE EQUAL EQUALEQUAL FALSE FUNCTION GE GT IDENTIFIER IF LBRACE LE LPAREN LT MINUS NOT NUMBER OROR PLUS RBRACE RETURN RPAREN SEMICOLON STRING TIMES TRUE VARjs : element jsjs : element : FUNCTION IDENTIFIER LPAREN optparams RPAREN compoundstmtelement : stmt SEMICOLONoptparams : paramsoptparams : params : IDENTIFIER COMMA paramsparams : IDENTIFIERcompoundstmt : LBRACE statements RBRACEstatements : stmt SEMICOLON statementsstatements : stmt : IF exp compoundstmtstmt : IF exp compoundstmt ELSE compoundstmtstmt : IDENTIFIER EQUAL expstmt : RETURN expstmt : VAR IDENTIFIER EQUAL expstmt : expexp : NOT expexp : LPAREN exp RPARENexp : exp OROR exp\n            | exp ANDAND exp\n            | exp EQUALEQUAL exp\n            | exp LT exp\n            | exp GT exp\n            | exp LE exp\n            | exp GE exp\n            | exp PLUS exp\n            | exp MINUS exp\n            | exp TIMES exp\n            | exp DIVIDE exp exp : IDENTIFIER LPAREN optargs RPARENoptargs : argsoptargs : args : exp COMMA argsargs : expexp : IDENTIFIERexp : NUMBERexp : STRINGexp : TRUEexp : FALSE'
     
-_lr_action_items = {'FUNCTION':([0,4,12,32,36,],[1,1,-4,-9,-3,]),'LBRACE':([14,17,29,31,],[-18,21,21,21,]),'RETURN':([0,4,12,21,32,33,36,],[7,7,-4,7,-9,7,-3,]),'RBRACE':([21,27,33,37,],[-11,32,-11,-10,]),'SEMICOLON':([2,5,8,14,15,20,22,26,28,32,34,],[-17,12,-18,-18,-15,-14,-12,-16,33,-9,-13,]),'EQUAL':([8,13,],[16,19,]),'ELSE':([22,32,],[29,-9,]),'COMMA':([24,],[30,]),'LPAREN':([10,],[18,]),'VAR':([0,4,12,21,32,33,36,],[6,6,-4,6,-9,6,-3,]),'RPAREN':([18,23,24,25,35,],[-6,-5,-8,31,-7,]),'IDENTIFIER':([0,1,4,6,7,9,12,16,18,19,21,30,32,33,36,],[8,10,8,13,14,14,-4,14,24,14,8,24,-9,8,-3,]),'$end':([0,3,4,11,12,32,36,],[-2,0,-2,-1,-4,-9,-3,]),'IF':([0,4,12,21,32,33,36,],[9,9,-4,9,-9,9,-3,]),}
+_lr_action_items = {'OROR':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,26,-36,26,26,26,-18,26,26,-19,-20,-21,-24,-30,-26,-29,-23,-25,-27,-22,-28,-31,26,]),'RETURN':([0,13,21,45,70,71,74,],[1,1,-4,1,-9,1,-3,]),'NUMBER':([0,1,9,11,13,15,18,19,21,26,27,28,29,30,31,32,33,34,35,36,44,45,59,70,71,74,],[6,6,6,6,6,6,6,6,-4,6,6,6,6,6,6,6,6,6,6,6,6,6,6,-9,6,-3,]),'TRUE':([0,1,9,11,13,15,18,19,21,26,27,28,29,30,31,32,33,34,35,36,44,45,59,70,71,74,],[3,3,3,3,3,3,3,3,-4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,-9,3,-3,]),'MINUS':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,36,-36,36,36,36,-18,36,36,-19,36,36,36,-30,36,-29,36,36,-27,36,-28,-31,36,]),'STRING':([0,1,9,11,13,15,18,19,21,26,27,28,29,30,31,32,33,34,35,36,44,45,59,70,71,74,],[2,2,2,2,2,2,2,2,-4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,-9,2,-3,]),'LE':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,33,-36,33,33,33,-18,33,33,-19,33,33,-24,-30,-26,-29,-23,-25,-27,33,-28,-31,33,]),'RPAREN':([2,3,6,12,16,19,22,37,39,40,41,42,43,47,48,49,50,51,52,53,54,55,56,57,58,60,61,62,67,73,],[-38,-39,-37,-40,-36,-33,43,-18,-32,58,-35,-6,-19,-20,-21,-24,-30,-26,-29,-23,-25,-27,-22,-28,-31,-5,-8,69,-34,-7,]),'SEMICOLON':([2,3,4,6,7,12,14,16,17,37,38,43,46,47,48,49,50,51,52,53,54,55,56,57,58,63,65,70,72,],[-38,-39,-36,-37,21,-40,-17,-36,-15,-18,-14,-19,-12,-20,-21,-24,-30,-26,-29,-23,-25,-27,-22,-28,-31,-16,71,-9,-13,]),'LT':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,32,-36,32,32,32,-18,32,32,-19,32,32,-24,-30,-26,-29,-23,-25,-27,32,-28,-31,32,]),'PLUS':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,34,-36,34,34,34,-18,34,34,-19,34,34,34,-30,34,-29,34,34,-27,34,-28,-31,34,]),'COMMA':([2,3,6,12,16,37,41,43,47,48,49,50,51,52,53,54,55,56,57,58,61,],[-38,-39,-37,-40,-36,-18,59,-19,-20,-21,-24,-30,-26,-29,-23,-25,-27,-22,-28,-31,68,]),'EQUALEQUAL':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,35,-36,35,35,35,-18,35,35,-19,35,35,-24,-30,-26,-29,-23,-25,-27,-22,-28,-31,35,]),'IDENTIFIER':([0,1,5,9,10,11,13,15,18,19,21,26,27,28,29,30,31,32,33,34,35,36,42,44,45,59,68,70,71,74,],[4,16,20,16,23,16,4,16,16,16,-4,16,16,16,16,16,16,16,16,16,16,16,61,16,4,16,61,-9,4,-3,]),'$end':([0,8,13,21,25,70,74,],[-2,0,-2,-4,-1,-9,-3,]),'FUNCTION':([0,13,21,70,74,],[5,5,-4,-9,-3,]),'GT':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,28,-36,28,28,28,-18,28,28,-19,28,28,-24,-30,-26,-29,-23,-25,-27,28,-28,-31,28,]),'DIVIDE':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,29,-36,29,29,29,-18,29,29,-19,29,29,29,-30,29,-29,29,29,29,29,29,-31,29,]),'EQUAL':([4,23,],[18,44,]),'RBRACE':([45,64,71,75,],[-11,70,-11,-10,]),'TIMES':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,31,-36,31,31,31,-18,31,31,-19,31,31,31,-30,31,-29,31,31,31,31,31,-31,31,]),'GE':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,30,-36,30,30,30,-18,30,30,-19,30,30,-24,-30,-26,-29,-23,-25,-27,30,-28,-31,30,]),'LPAREN':([0,1,4,9,11,13,15,16,18,19,20,21,26,27,28,29,30,31,32,33,34,35,36,44,45,59,70,71,74,],[9,9,19,9,9,9,9,19,9,9,42,-4,9,9,9,9,9,9,9,9,9,9,9,9,9,9,-9,9,-3,]),'VAR':([0,13,21,45,70,71,74,],[10,10,-4,10,-9,10,-3,]),'ELSE':([46,70,],[66,-9,]),'IF':([0,13,21,45,70,71,74,],[11,11,-4,11,-9,11,-3,]),'ANDAND':([2,3,4,6,12,14,16,17,22,24,37,38,41,43,47,48,49,50,51,52,53,54,55,56,57,58,63,],[-38,-39,-36,-37,-40,27,-36,27,27,27,-18,27,27,-19,27,-21,-24,-30,-26,-29,-23,-25,-27,-22,-28,-31,27,]),'LBRACE':([2,3,6,12,16,24,37,43,47,48,49,50,51,52,53,54,55,56,57,58,66,69,],[-38,-39,-37,-40,-36,45,-18,-19,-20,-21,-24,-30,-26,-29,-23,-25,-27,-22,-28,-31,45,45,]),'FALSE':([0,1,9,11,13,15,18,19,21,26,27,28,29,30,31,32,33,34,35,36,44,45,59,70,71,74,],[12,12,12,12,12,12,12,12,-4,12,12,12,12,12,12,12,12,12,12,12,12,12,12,-9,12,-3,]),'NOT':([0,1,9,11,13,15,18,19,21,26,27,28,29,30,31,32,33,34,35,36,44,45,59,70,71,74,],[15,15,15,15,15,15,15,15,-4,15,15,15,15,15,15,15,15,15,15,15,15,15,15,-9,15,-3,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statements':([21,33,],[27,37,]),'stmt':([0,4,21,33,],[5,5,28,28,]),'element':([0,4,],[4,4,]),'params':([18,30,],[23,35,]),'exp':([0,4,7,9,16,19,21,33,],[2,2,15,17,20,26,2,2,]),'js':([0,4,],[3,11,]),'optparams':([18,],[25,]),'compoundstmt':([17,29,31,],[22,34,36,]),}
+_lr_goto_items = {'statements':([45,71,],[64,75,]),'args':([19,59,],[39,67,]),'stmt':([0,13,45,71,],[7,7,65,65,]),'element':([0,13,],[13,13,]),'params':([42,68,],[60,73,]),'exp':([0,1,9,11,13,15,18,19,26,27,28,29,30,31,32,33,34,35,36,44,45,59,71,],[14,17,22,24,14,37,38,41,47,48,49,50,51,52,53,54,55,56,57,63,14,41,14,]),'js':([0,13,],[8,25,]),'optparams':([42,],[62,]),'compoundstmt':([24,66,69,],[46,72,74,]),'optargs':([19,],[40,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,22 +27,44 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> js","S'",1,None,None,None),
-  ('js -> element js','js',2,'p_js','js_parser.py',28),
-  ('js -> <empty>','js',0,'p_js_empty','js_parser.py',32),
-  ('element -> FUNCTION IDENTIFIER LPAREN optparams RPAREN compoundstmt','element',6,'p_element_func','js_parser.py',37),
-  ('element -> stmt SEMICOLON','element',2,'p_element_stmt','js_parser.py',42),
-  ('optparams -> params','optparams',1,'p_optparams','js_parser.py',46),
-  ('optparams -> <empty>','optparams',0,'p_optparams_empty','js_parser.py',50),
-  ('params -> IDENTIFIER COMMA params','params',3,'p_params','js_parser.py',54),
-  ('params -> IDENTIFIER','params',1,'p_params_last','js_parser.py',58),
-  ('compoundstmt -> LBRACE statements RBRACE','compoundstmt',3,'p_compoundstmt','js_parser.py',62),
-  ('statements -> stmt SEMICOLON statements','statements',3,'p_statements','js_parser.py',66),
-  ('statements -> <empty>','statements',0,'p_statements_empty','js_parser.py',70),
-  ('stmt -> IF exp compoundstmt','stmt',3,'p_stmt_ifthen','js_parser.py',75),
-  ('stmt -> IF exp compoundstmt ELSE compoundstmt','stmt',5,'p_stmt_ifthenelse','js_parser.py',80),
-  ('stmt -> IDENTIFIER EQUAL exp','stmt',3,'p_stmt_assign','js_parser.py',85),
-  ('stmt -> RETURN exp','stmt',2,'p_stmt_return','js_parser.py',90),
-  ('stmt -> VAR IDENTIFIER EQUAL exp','stmt',4,'p_stmt_declare','js_parser.py',95),
-  ('stmt -> exp','stmt',1,'p_stmt_exp','js_parser.py',100),
-  ('exp -> IDENTIFIER','exp',1,'p_exp_identifier','js_parser.py',104),
+  ('js -> element js','js',2,'p_js','js_parser.py',43),
+  ('js -> <empty>','js',0,'p_js_empty','js_parser.py',47),
+  ('element -> FUNCTION IDENTIFIER LPAREN optparams RPAREN compoundstmt','element',6,'p_element_func','js_parser.py',52),
+  ('element -> stmt SEMICOLON','element',2,'p_element_stmt','js_parser.py',57),
+  ('optparams -> params','optparams',1,'p_optparams','js_parser.py',61),
+  ('optparams -> <empty>','optparams',0,'p_optparams_empty','js_parser.py',65),
+  ('params -> IDENTIFIER COMMA params','params',3,'p_params','js_parser.py',69),
+  ('params -> IDENTIFIER','params',1,'p_params_last','js_parser.py',73),
+  ('compoundstmt -> LBRACE statements RBRACE','compoundstmt',3,'p_compoundstmt','js_parser.py',77),
+  ('statements -> stmt SEMICOLON statements','statements',3,'p_statements','js_parser.py',81),
+  ('statements -> <empty>','statements',0,'p_statements_empty','js_parser.py',85),
+  ('stmt -> IF exp compoundstmt','stmt',3,'p_stmt_ifthen','js_parser.py',90),
+  ('stmt -> IF exp compoundstmt ELSE compoundstmt','stmt',5,'p_stmt_ifthenelse','js_parser.py',95),
+  ('stmt -> IDENTIFIER EQUAL exp','stmt',3,'p_stmt_assign','js_parser.py',100),
+  ('stmt -> RETURN exp','stmt',2,'p_stmt_return','js_parser.py',105),
+  ('stmt -> VAR IDENTIFIER EQUAL exp','stmt',4,'p_stmt_declare','js_parser.py',110),
+  ('stmt -> exp','stmt',1,'p_stmt_exp','js_parser.py',115),
+  ('exp -> NOT exp','exp',2,'p_exp_not','js_parser.py',152),
+  ('exp -> LPAREN exp RPAREN','exp',3,'p_exp_parens','js_parser.py',156),
+  ('exp -> exp OROR exp','exp',3,'p_binop','js_parser.py',160),
+  ('exp -> exp ANDAND exp','exp',3,'p_binop','js_parser.py',161),
+  ('exp -> exp EQUALEQUAL exp','exp',3,'p_binop','js_parser.py',162),
+  ('exp -> exp LT exp','exp',3,'p_binop','js_parser.py',163),
+  ('exp -> exp GT exp','exp',3,'p_binop','js_parser.py',164),
+  ('exp -> exp LE exp','exp',3,'p_binop','js_parser.py',165),
+  ('exp -> exp GE exp','exp',3,'p_binop','js_parser.py',166),
+  ('exp -> exp PLUS exp','exp',3,'p_binop','js_parser.py',167),
+  ('exp -> exp MINUS exp','exp',3,'p_binop','js_parser.py',168),
+  ('exp -> exp TIMES exp','exp',3,'p_binop','js_parser.py',169),
+  ('exp -> exp DIVIDE exp','exp',3,'p_binop','js_parser.py',170),
+  ('exp -> IDENTIFIER LPAREN optargs RPAREN','exp',4,'p_exp_call','js_parser.py',174),
+  ('optargs -> args','optargs',1,'p_optargs','js_parser.py',178),
+  ('optargs -> <empty>','optargs',0,'p_optargs_empty','js_parser.py',182),
+  ('args -> exp COMMA args','args',3,'p_args','js_parser.py',186),
+  ('args -> exp','args',1,'p_args_last','js_parser.py',190),
+  ('exp -> IDENTIFIER','exp',1,'p_exp_identifier','js_parser.py',194),
+  ('exp -> NUMBER','exp',1,'p_exp_number','js_parser.py',198),
+  ('exp -> STRING','exp',1,'p_exp_string','js_parser.py',202),
+  ('exp -> TRUE','exp',1,'p_exp_true','js_parser.py',206),
+  ('exp -> FALSE','exp',1,'p_exp_false','js_parser.py',210),
 ]

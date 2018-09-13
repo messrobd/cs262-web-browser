@@ -19,7 +19,22 @@ complete the JS parser for statements. grammar:
     stmt => RETURN exp
     stmt => VAR IDENTIFIER = exp
     stmt => exp
-    [exp => IDENTIFIER]                                         # exercise treats all exp as identifiers
+
+learnings:
+    * the goal is statments. this is important: this is why we only return parse
+    trees for statements and statement terminals
+    * the ':' needs to be padded by ' ' on both sides, or the parser fails with
+    a syntax error
+    * comments inside rules also seem to cause the parser to fail with a syntax
+    error
+    * it was a good move trying to instatiate the parser before trying to feed
+    it strings
+    * tokens can lex correctly and then throw cryptic errors from the parser, or
+    parse in an unexpected (to me) way
+        - it was useful to test lexing to troubleshoot parsing
+    TODO:
+    1. how to parse identifiers and strings that include keywords?
+    2. why not treat quotes the same as parentheses? conceivably related to (1)
 '''
 
 start = 'js'    # label the starting non-terminal
@@ -100,29 +115,64 @@ def p_stmt_exp(p):
     'stmt : exp'
     p[0] = ('exp', p[1])
 
-def p_exp_identifier(p): # placeholder for exercise 4
-        'exp : IDENTIFIER'
-        p[0] = ("identifier",p[1])
+'''
+parsing JS expressions (lesson 16: prob set, #5)
 
-''' to be developed in exercise 5
+complete the JS parser for statements. grammar:
+    exp => NOT exp                      # recursive unary cases
+    exp => ( exp )
+    exp => exp <operator> exp           # many recursive binary cases
+    exp => IDENTIFIER ( optargs )       # function call
+    optargs => args                     # >=1 args
+    optargs =>                          # no args
+    args => exp , args                  # recursive term for >1 args
+    args => exp                         # base case ==1 args
+    exp => IDENTIFIER                   # base cases
+    exp => NUMBER
+    exp => STRING
+    exp => TRUE
+    exp => FALSE
+
+learning:
+    * (more of a guess) type errors (eg string + number) arise from context,
+    which we are not dealing with here
+'''
+
 precedence = (
+    ('left', 'OROR'),
+    ('left', 'ANDAND'),
+    ('left', 'EQUALEQUAL'),
+    ('left', 'LT', 'GT', 'LE', 'GE'),
     ('left', 'PLUS', 'MINUS'), # lower precedence to the top. left indicates associativity
-    ('left', 'TIMES', 'DIVIDE') # higher precedence to the bottom
+    ('left', 'TIMES', 'DIVIDE'), # higher precedence to the bottom
+    ('right', 'NOT')
 )
 
-def p_binopt(p):
-    \'''exp: exp PLUS exp
-          | exp MINUS exp
-          | exp TIMES exp\''' # TODO add remainder
-    p[0] = ('binopt', p[1], p[2], p[3])
+def p_exp_not(p):
+    'exp : NOT exp'
+    p[0] = ('not', p[2])
+
+def p_exp_parens(p):
+    'exp : LPAREN exp RPAREN'
+    p[0] = p[2]
+
+def p_binop(p):
+    '''exp : exp OROR exp
+            | exp ANDAND exp
+            | exp EQUALEQUAL exp
+            | exp LT exp
+            | exp GT exp
+            | exp LE exp
+            | exp GE exp
+            | exp PLUS exp
+            | exp MINUS exp
+            | exp TIMES exp
+            | exp DIVIDE exp '''
+    p[0] = ('binop', p[1], p[2], p[3])
 
 def p_exp_call(p):
     'exp : IDENTIFIER LPAREN optargs RPAREN'
-    p[0] = ("call", p[1], p[3])
-
-def p_exp_number(p):
-    'exp : NUMBER'
-    p[0] = ("number", p[1])
+    p[0] = ('call', p[1], p[3])
 
 def p_optargs(p):
     'optargs : args' # optarg non-terminal must match an input (above)
@@ -139,4 +189,23 @@ def p_args(p):
 def p_args_last(p):
     'args : exp'
     p[0] = [p[1]]
-'''
+
+def p_exp_identifier(p):
+    'exp : IDENTIFIER'
+    p[0] = ('identifier', p[1])
+
+def p_exp_number(p):
+    'exp : NUMBER'
+    p[0] = ('number', p[1])
+
+def p_exp_string(p):
+    'exp : STRING'
+    p[0] = ('string', p[1])
+
+def p_exp_true(p):
+    'exp : TRUE'
+    p[0] = ('true', 'true')
+
+def p_exp_false(p):
+    'exp : FALSE'
+    p[0] = ('false', 'false')
