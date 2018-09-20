@@ -23,23 +23,23 @@ def interpret_html(trees):
                     print problem
 
 def eval_exp(tree, environment):
-    nodetype = tree[0]
-    if nodetype == "number":
+    exptype = tree[0]
+    if exptype == "number":
         return float(tree[1])
-    elif nodetype == "string":
+    elif exptype == "string":
         return tree[1]
-    elif nodetype == "true":
+    elif exptype == "true":
         return True
-    elif nodetype == "false":
+    elif exptype == "false":
         return False
-    elif nodetype == "not":
+    elif exptype == "not":
         return not(eval_exp(tree[1], environment))
-    elif nodetype == "binop":
+    elif exptype == "binop":
         (left_child, operator, right_child) = tree[1:]
         x = eval_exp(left_child, environment)
         y = eval_exp(right_child, environment)
         return perform_binop(x, operator, y)
-    elif nodetype == "identifier":
+    elif exptype == "identifier":
         vname = tree[1]
         value = env_lookup(vname,environment)
         if value == None:
@@ -64,3 +64,27 @@ def env_lookup(vname, environment):
         return None
     else:
         return env_lookup(vname, environment[0])
+
+def env_update(vname, value, environment):
+    if vname in environment[1]:
+        (environment[1])[vname] = value
+    elif not (environment[0] == None):
+        env_update(vname, value, environment[0])
+
+def eval_stmt(tree, environment):
+    stmttype = tree[0]
+    if stmttype == "assign":
+        (variable_name, right_child) = tree[1:]
+        new_value = eval_exp(right_child, environment)
+        print new_value
+        env_update(variable_name, new_value, environment)
+    elif stmttype == "if-then-else":
+        (conditional_exp, then_stmts, else_stmts) = tree[1:]
+        if eval_exp(conditional_exp, environment):
+            return eval_stmts(then_stmts, environment) # TODO: check stmts is always a list 
+        else:
+            return eval_stmts(else_stmts, environment)
+
+def eval_stmts(stmts, environment):
+        for stmt in stmts:
+            eval_stmt(stmt, environment)
