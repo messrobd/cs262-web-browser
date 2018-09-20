@@ -48,7 +48,21 @@ def eval_exp(tree, environment):
             return value
 
 def perform_binop(x, operator, y):
-    if operator == '+':
+    if operator == '||':
+        return x or y
+    elif operator == '&&':
+        return  and y
+    elif operator == '==':
+        return x == y
+    elif operator == '<':
+        return x < y
+    elif operator == '>':
+        return x > y
+    elif operator == '<=':
+        return x <= y
+    elif operator == '>=':
+        return x >= y
+    elif operator == '+':
         return x + y
     elif operator == '-':
         return x - y
