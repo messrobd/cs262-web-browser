@@ -40,7 +40,12 @@ def eval_exp(tree, environment):
         y = eval_exp(right_child, environment)
         return perform_binop(x, operator, y)
     elif nodetype == "identifier":
-        return env_lookup(environment, tree[1])
+        vname = tree[1]
+        value = env_lookup(vname,environment)
+        if value == None:
+            print "ERROR: unbound variable " + vname
+        else:
+            return value
 
 def perform_binop(x, operator, y):
     if operator == '+':
@@ -51,6 +56,11 @@ def perform_binop(x, operator, y):
         return x * y
     elif operator == '/':
         return x / y
-    
-def env_lookup(env,vname):
-        return env.get(vname,None)
+
+def env_lookup(vname, environment):
+    if vname in environment[1]:
+        return (environment[1])[vname]
+    elif environment[0] == None:
+        return None
+    else:
+        return env_lookup(vname, environment[0])
