@@ -22,6 +22,10 @@ def interpret_html(trees):
                 except Exception as problem:
                     print problem
 
+'''
+procedure evaluates an expression (1 + 2, x + y). variable values are sought in
+the current environment frame, then recursively up to global '''
+
 def eval_exp(tree, environment):
     exptype = tree[0]
     if exptype == "number":
@@ -47,11 +51,12 @@ def eval_exp(tree, environment):
         else:
             return value
 
+#helper proc to simplify eval_exp()
 def perform_binop(x, operator, y):
     if operator == '||':
         return x or y
     elif operator == '&&':
-        return  and y
+        return x and y
     elif operator == '==':
         return x == y
     elif operator == '<':
@@ -71,6 +76,7 @@ def perform_binop(x, operator, y):
     elif operator == '/':
         return x / y
 
+# helper proc to look up variables. begins in the current env frame, bubbles up to global
 def env_lookup(vname, environment):
     if vname in environment[1]:
         return (environment[1])[vname]
@@ -79,11 +85,22 @@ def env_lookup(vname, environment):
     else:
         return env_lookup(vname, environment[0])
 
+# helper proc to update variables. only updates, does not define new variables
 def env_update(vname, value, environment):
     if vname in environment[1]:
         (environment[1])[vname] = value
     elif not (environment[0] == None):
         env_update(vname, value, environment[0])
+
+'''
+procedure evaluates statements (reminder: statement can include expression, but
+not the other way round)
+
+a function call creates a new environment frame as a child of the frame in
+which the function is declared. this is to support closures, I'm certain
+
+return statements are implemented using exceptions, I guess as a simple way of
+transporting the return payload '''
 
 def eval_stmt(tree, environment):
     stmttype = tree[0]
@@ -108,7 +125,7 @@ def eval_stmt(tree, environment):
                 env_vars = {}
                 for param, arg in zip(fparams, args):
                     env_vars[param] = eval_exp(arg, environment)
-                new_environment = (fenv, env_vars) # parent env should be that of the func declaration
+                new_environment = (fenv, env_vars)
                 try:
                     eval_stmts(fbody, new_environment)
                     return None
@@ -117,11 +134,12 @@ def eval_stmt(tree, environment):
         else:
             print  "ERROR: call to non-function"
     elif stmttype == "return":
-        retval = eval_exp(tree[1],environment)
+        retval = eval_exp(tree[1], environment)
         raise Exception(retval)
     elif stmttype == "exp":
-        eval_exp(tree[1],environment)
+        eval_exp(tree[1], environment)
 
+# helper proc to handle function and if statement bodies (compound stmts)
 def eval_stmts(stmts, environment):
     for stmt in stmts:
         eval_stmt(stmt, environment)
