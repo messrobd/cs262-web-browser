@@ -21,8 +21,8 @@ complete the JS parser for statements. grammar:
     stmt => exp
 
 learnings:
-    * the goal is statments. this is important: this is why we only return parse
-    trees for statements and statement terminals
+    * the goal is statements. this is important: this is why we only return
+    parse trees for statements and statement terminals
     * the ':' needs to be padded by ' ' on both sides, or the parser fails with
     a syntax error
     * comments inside rules also seem to cause the parser to fail with a syntax
