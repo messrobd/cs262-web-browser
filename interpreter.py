@@ -1,17 +1,29 @@
 '''
-procedure is to provide words ("word-element","Hello") to a rendering component
-(missing) and to extract and validate tags ('tag-element', 'b', [], [], 'b')]
+procedure is to
+1. provide words ("word-element","Hello") to a rendering component (missing)
+2. invoke js interpreter and render result of script
+3. extract and validate tags ('tag-element', 'b', [], [], 'b')] '''
 
-missing: don't yet see how we are going tp transition from html to js
-interpreter '''
+import ply.lex as lex
+import ply.yacc as yacc
+import js_lexer
+import js_parser
+
+javascript_lexer = lex.lex(module=js_lexer)
+javascript_parser = lex.lex(module=js_parser)
 
 def interpret_html(trees):
     for tree in trees:
         nodetype = tree[0]
-        if nodetype == "word-element":
+        if nodetype == "word-elt":
             word = tree[1]
             return word
-        elif nodetype == "tag-element":
+        elif nodetype == 'javascript-elt':
+            js_text = tree[1]
+            js_ptree = javascript_parser.parse(js_text, lexer=javascript_lexer)
+            # TODO: replace placeholder interp procs with real ones
+            # return jsinterp.interpret(js_ptree)
+        elif nodetype == "tag-elt":
             (tagname, tagargs, subtrees, closetagname) = tree[1:]
             if closetagname != tagname:
                 raise Exception('doh! mismatched tags')

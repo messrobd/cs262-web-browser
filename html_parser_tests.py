@@ -1,7 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
 import html_lexer
-from html_lexer import tokens
 from  html_parser import *
 
 '''

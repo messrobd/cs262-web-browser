@@ -5,6 +5,8 @@ html =>          # the rest of the content may be empty
 elt => WORD      # an element can be a word, which is a terminal
 elt => TAG       # tag is a terminal '''
 
+from html_lexer import tokens
+
 def p_html(p): # p_ is the flag prefix for a parse rule
     'html : elt html' # my guess this is interpreted as an object
     p[0] = [p[1]] + p[2] # p[0] refers to 'html' on the lhs (is looking up from the 'object'?)

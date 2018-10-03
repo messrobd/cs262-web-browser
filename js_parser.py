@@ -37,6 +37,8 @@ learnings:
     2. why not treat quotes the same as parentheses? conceivably related to (1)
 '''
 
+from js_lexer import tokens
+
 start = 'js'    # label the starting non-terminal
 
 def p_js(p):

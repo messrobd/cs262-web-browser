@@ -1,12 +1,12 @@
 from interpreter import *
 '''
-html_simple = [("word-element","Hello")]
+html_simple = [("word-elt","Hello")]
 print interpret_html(html_simple)
 
-html_body = [('tag-element', 'body', [], [('tag-element', 'b', [], [('word-element', 'Hello World')], 'b')], 'body')]
+html_body = [('tag-elt', 'body', [], [('tag-elt', 'b', [], [('word-elt', 'Hello World')], 'b')], 'body')]
 print interpret_html(html_body)
 
-html_negative = [('tag-element', 'body', [], [('tag-element', 'i', [], [('word-element', 'Hello World')], 'b')], 'body')]
+html_negative = [('tag-elt', 'body', [], [('tag-elt', 'i', [], [('word-elt', 'Hello World')], 'b')], 'body')]
 print interpret_html(html_negative)
 
 test_tree1 = ("binop", ("number","5"),"+",("number","8"))

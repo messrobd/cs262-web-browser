@@ -1,8 +1,7 @@
 import ply.lex as lex
 import ply.yacc as yacc
 import js_lexer
-from js_lexer import tokens
-from  js_parser import *
+import js_parser
 
 '''
 test procedures (copied from tutorial): '''
@@ -22,7 +21,7 @@ def test_parser(input_string):
     return parse_tree
 
 lexer = lex.lex(module=js_lexer)
-parser = yacc.yacc()
+parser = yacc.yacc(module=js_parser)
 '''
 test_tokens = """ - !  && () * , / ; { || } + < <= = == > >= else false function
 if return true var """

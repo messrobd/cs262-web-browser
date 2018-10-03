@@ -31,7 +31,7 @@ def t_htmlcomment_error(token): # the charcters in the comment would result in e
     token.lexer.skip(1) # skip gathers the text up so that it's available to count the newlines
 
 # handling of javascript: similar to comments, except we eventually return the
-# whole script as one token. we'll also increment the line number 
+# whole script as one token. we'll also increment the line number
 def t_javascript(token):
     r'\<script\ type=\"text\/javascript\"\>'
     token.lexer.code_start = token.lexer.lexpos # store the index of the charactacter at which the js begins
@@ -39,7 +39,7 @@ def t_javascript(token):
 
 def t_javascript_end(token):
     r'\<\/script\>'
-    start_index, stop_index = token.lexer.code_start token.lexer.lexpos - 9 # 9 ch in end tag
+    start_index, stop_index = token.lexer.code_start, token.lexer.lexpos - 9 # 9 ch in end tag
     token.value = token.lexer.lexdata[start_index: stop_index] # write all the data from the js lexer into one token
     token.type = 'JAVASCRIPT'
     token.lexer.lineno += token.value.count('\n')
