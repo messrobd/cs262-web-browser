@@ -40,9 +40,10 @@ webpage_script_simple = """<html>
 <h1>Simple script</h1>
 <p>
 This paragraph starts in HTML ...
-<script type="text/javascript">write("SCRIPT OUTPUT");
+<script type="text/javascript">write("This is my script!");
 </script>
 ... and this paragraph finishes in HTML.
 </p>
 </html>"""
 print test_lexer(webpage_script_simple)
+print test_parser(webpage_script_simple)
