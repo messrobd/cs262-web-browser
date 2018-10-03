@@ -2,9 +2,13 @@ import ply.lex as lex
 import ply.yacc as yacc
 import js_lexer
 import js_parser
+import html_lexer
+import html_parser
 
-javascript_lexer = lex.lex(module=js_lexer)
-javascript_parser = yacc.yacc(module=js_parser)
+js_lexer = lex.lex(module=js_lexer)
+js_parser = yacc.yacc(module=js_parser)
+html_lexer = lex.lex(module=html_lexer)
+html_parser = yacc.yacc(module=html_parser)
 
 #helper proc to simplify eval_exp()
 def perform_binop(x, operator, y):
@@ -137,7 +141,7 @@ example of a procedure to optimise a js programme (as a parse tree) to remove
 unnecessary expressions. we do this before interpreting it, so that we can
 arrive at the *same* answer in less time than the original code.
 
-this is simple, in reality optiisation is a huge deal '''
+this is simple, in reality optimisation is a huge deal '''
 
 def optimize(tree):
     elttype = tree[0]
@@ -168,7 +172,7 @@ def interpret_html(trees):
             return word
         elif nodetype == 'javascript-elt':
             js_text = tree[1]
-            js_ptree = javascript_parser.parse(js_text, lexer=javascript_lexer)
+            js_ptree = js_parser.parse(js_text, lexer=js_lexer)
             js_ptree = optimize(js_ptree)
             return interpret_js(js_ptree)
         elif nodetype == "tag-elt":
@@ -178,6 +182,6 @@ def interpret_html(trees):
             else:
                 # placeholder return stmt, pending final spec
                 try:
-                    return tagname + ' ' + interpret_html(subtrees)
+                    return interpret_html(subtrees)
                 except Exception as problem:
                     print problem

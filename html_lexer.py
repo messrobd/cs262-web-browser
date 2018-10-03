@@ -6,7 +6,8 @@ tokens = (
   'RANGLE',
   'EQUAL',
   'STRING',
-  'WORD'
+  'WORD',
+  'JAVASCRIPT'
 )
 states = (
   ('htmlcomment','exclusive'), # once entered, no other rules will be considered

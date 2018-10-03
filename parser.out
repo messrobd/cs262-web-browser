@@ -1,1 +1,213 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    STRING
+    EQUAL
+
+Grammar
+
+Rule 0     S' -> html
+Rule 1     html -> elt html
+Rule 2     html -> <empty>
+Rule 3     elt -> WORD
+Rule 4     elt -> JAVASCRIPT
+Rule 5     elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE
+Rule 6     opt_args -> tag_args
+Rule 7     opt_args -> <empty>
+Rule 8     tag_args -> WORD tag_args
+Rule 9     tag_args -> WORD
+
+Terminals, with rules where they appear
+
+EQUAL                : 
+JAVASCRIPT           : 4
+LANGLE               : 5
+LANGLESLASH          : 5
+RANGLE               : 5 5
+STRING               : 
+WORD                 : 3 5 5 8 9
+error                : 
+
+Nonterminals, with rules where they appear
+
+elt                  : 1
+html                 : 1 5 0
+opt_args             : 5
+tag_args             : 6 8
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . html
+    (1) html -> . elt html
+    (2) html -> .
+    (3) elt -> . WORD
+    (4) elt -> . JAVASCRIPT
+    (5) elt -> . LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE
+
+    $end            reduce using rule 2 (html -> .)
+    WORD            shift and go to state 2
+    JAVASCRIPT      shift and go to state 3
+    LANGLE          shift and go to state 1
+
+    html                           shift and go to state 4
+    elt                            shift and go to state 5
+
+state 1
+
+    (5) elt -> LANGLE . WORD opt_args RANGLE html LANGLESLASH WORD RANGLE
+
+    WORD            shift and go to state 6
+
+
+state 2
+
+    (3) elt -> WORD .
+
+    WORD            reduce using rule 3 (elt -> WORD .)
+    JAVASCRIPT      reduce using rule 3 (elt -> WORD .)
+    LANGLE          reduce using rule 3 (elt -> WORD .)
+    $end            reduce using rule 3 (elt -> WORD .)
+    LANGLESLASH     reduce using rule 3 (elt -> WORD .)
+
+
+state 3
+
+    (4) elt -> JAVASCRIPT .
+
+    WORD            reduce using rule 4 (elt -> JAVASCRIPT .)
+    JAVASCRIPT      reduce using rule 4 (elt -> JAVASCRIPT .)
+    LANGLE          reduce using rule 4 (elt -> JAVASCRIPT .)
+    $end            reduce using rule 4 (elt -> JAVASCRIPT .)
+    LANGLESLASH     reduce using rule 4 (elt -> JAVASCRIPT .)
+
+
+state 4
+
+    (0) S' -> html .
+
+
+
+state 5
+
+    (1) html -> elt . html
+    (1) html -> . elt html
+    (2) html -> .
+    (3) elt -> . WORD
+    (4) elt -> . JAVASCRIPT
+    (5) elt -> . LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE
+
+    $end            reduce using rule 2 (html -> .)
+    LANGLESLASH     reduce using rule 2 (html -> .)
+    WORD            shift and go to state 2
+    JAVASCRIPT      shift and go to state 3
+    LANGLE          shift and go to state 1
+
+    html                           shift and go to state 7
+    elt                            shift and go to state 5
+
+state 6
+
+    (5) elt -> LANGLE WORD . opt_args RANGLE html LANGLESLASH WORD RANGLE
+    (6) opt_args -> . tag_args
+    (7) opt_args -> .
+    (8) tag_args -> . WORD tag_args
+    (9) tag_args -> . WORD
+
+    RANGLE          reduce using rule 7 (opt_args -> .)
+    WORD            shift and go to state 8
+
+    opt_args                       shift and go to state 10
+    tag_args                       shift and go to state 9
+
+state 7
+
+    (1) html -> elt html .
+
+    $end            reduce using rule 1 (html -> elt html .)
+    LANGLESLASH     reduce using rule 1 (html -> elt html .)
+
+
+state 8
+
+    (8) tag_args -> WORD . tag_args
+    (9) tag_args -> WORD .
+    (8) tag_args -> . WORD tag_args
+    (9) tag_args -> . WORD
+
+    RANGLE          reduce using rule 9 (tag_args -> WORD .)
+    WORD            shift and go to state 8
+
+    tag_args                       shift and go to state 11
+
+state 9
+
+    (6) opt_args -> tag_args .
+
+    RANGLE          reduce using rule 6 (opt_args -> tag_args .)
+
+
+state 10
+
+    (5) elt -> LANGLE WORD opt_args . RANGLE html LANGLESLASH WORD RANGLE
+
+    RANGLE          shift and go to state 12
+
+
+state 11
+
+    (8) tag_args -> WORD tag_args .
+
+    RANGLE          reduce using rule 8 (tag_args -> WORD tag_args .)
+
+
+state 12
+
+    (5) elt -> LANGLE WORD opt_args RANGLE . html LANGLESLASH WORD RANGLE
+    (1) html -> . elt html
+    (2) html -> .
+    (3) elt -> . WORD
+    (4) elt -> . JAVASCRIPT
+    (5) elt -> . LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE
+
+    LANGLESLASH     reduce using rule 2 (html -> .)
+    WORD            shift and go to state 2
+    JAVASCRIPT      shift and go to state 3
+    LANGLE          shift and go to state 1
+
+    html                           shift and go to state 13
+    elt                            shift and go to state 5
+
+state 13
+
+    (5) elt -> LANGLE WORD opt_args RANGLE html . LANGLESLASH WORD RANGLE
+
+    LANGLESLASH     shift and go to state 14
+
+
+state 14
+
+    (5) elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH . WORD RANGLE
+
+    WORD            shift and go to state 15
+
+
+state 15
+
+    (5) elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH WORD . RANGLE
+
+    RANGLE          shift and go to state 16
+
+
+state 16
+
+    (5) elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE .
+
+    WORD            reduce using rule 5 (elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE .)
+    JAVASCRIPT      reduce using rule 5 (elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE .)
+    LANGLE          reduce using rule 5 (elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE .)
+    $end            reduce using rule 5 (elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE .)
+    LANGLESLASH     reduce using rule 5 (elt -> LANGLE WORD opt_args RANGLE html LANGLESLASH WORD RANGLE .)
+

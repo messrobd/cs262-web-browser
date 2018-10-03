@@ -27,7 +27,7 @@ learnings:
     a syntax error
     * comments inside rules also seem to cause the parser to fail with a syntax
     error
-    * it was a good move trying to instatiate the parser before trying to feed
+    * it was a good move trying to instantiate the parser before trying to feed
     it strings
     * tokens can lex correctly and then throw cryptic errors from the parser, or
     parse in an unexpected (to me) way
