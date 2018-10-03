@@ -1,38 +1,10 @@
-'''
-procedure is to
-1. provide words ("word-element","Hello") to a rendering component (missing)
-2. invoke js interpreter and render result of script
-3. extract and validate tags ('tag-element', 'b', [], [], 'b')] '''
-
 import ply.lex as lex
 import ply.yacc as yacc
 import js_lexer
 import js_parser
 
 javascript_lexer = lex.lex(module=js_lexer)
-javascript_parser = lex.lex(module=js_parser)
-
-def interpret_html(trees):
-    for tree in trees:
-        nodetype = tree[0]
-        if nodetype == "word-elt":
-            word = tree[1]
-            return word
-        elif nodetype == 'javascript-elt':
-            js_text = tree[1]
-            js_ptree = javascript_parser.parse(js_text, lexer=javascript_lexer)
-            # TODO: replace placeholder interp procs with real ones
-            # return jsinterp.interpret(js_ptree)
-        elif nodetype == "tag-elt":
-            (tagname, tagargs, subtrees, closetagname) = tree[1:]
-            if closetagname != tagname:
-                raise Exception('doh! mismatched tags')
-            else:
-                # placeholder return stmt, pending final spec
-                try:
-                    return tagname + ' ' + interpret_html(subtrees)
-                except Exception as problem:
-                    print problem
+javascript_parser = yacc.yacc(module=js_parser)
 
 '''
 procedure evaluates an expression (1 + 2, x + y). variable values are sought in
@@ -57,11 +29,34 @@ def eval_exp(tree, environment):
         return perform_binop(x, operator, y)
     elif exptype == "identifier":
         vname = tree[1]
-        value = env_lookup(vname,environment)
+        value = env_lookup(vname, environment)
         if value == None:
             print "ERROR: unbound variable " + vname
         else:
             return value
+    elif exptype == "call":
+        (fname, args) = tree[1:]
+        fvalue = env_lookup(fname, environment)
+        if fname == 'write': # write generates our ouput to the html interpreter ==> special handling
+            argval = eval_exp(fargs[0], environment)
+            output_sofar = env_lookup('javascript output', environment)
+            env_update('javascript output' + output_sofar + str(argval), environment)
+        elif fvalue[0] == "function":
+            (fparams, fbody, fenv) = fvalue[1:]
+            if len(fparams) != len(args):
+                print "ERROR: wrong number of args"
+            else:
+                env_vars = {}
+                for param, arg in zip(fparams, args):
+                    env_vars[param] = eval_exp(arg, environment)
+                new_environment = (fenv, env_vars)
+                try:
+                    eval_stmts(fbody, new_environment)
+                    return None
+                except Exception as return_value:
+                    return return_value
+        else:
+            print  "ERROR: call to non-function"
 
 #helper proc to simplify eval_exp()
 def perform_binop(x, operator, y):
@@ -114,6 +109,11 @@ which the function is declared. this is to support closures, I'm certain
 return statements are implemented using exceptions, I guess as a simple way of
 transporting the return payload '''
 
+# helper proc to handle function and if statement bodies (compound stmts)
+def eval_stmts(stmts, environment):
+    for stmt in stmts:
+        eval_stmt(stmt, environment)
+
 def eval_stmt(tree, environment):
     stmttype = tree[0]
     if stmttype == "assign":
@@ -126,32 +126,64 @@ def eval_stmt(tree, environment):
             return eval_stmts(then_stmts, environment) # TODO: check stmts is always a list
         else:
             return eval_stmts(else_stmts, environment)
-    elif stmttype == "call":
-        (fname, args) = tree[1:]
-        fvalue = env_lookup(fname, environment)
-        if fvalue[0] == "function":
-            (fparams, fbody, fenv) = fvalue[1:]
-            if len(fparams) != len(args):
-                print "ERROR: wrong number of args"
-            else:
-                env_vars = {}
-                for param, arg in zip(fparams, args):
-                    env_vars[param] = eval_exp(arg, environment)
-                new_environment = (fenv, env_vars)
-                try:
-                    eval_stmts(fbody, new_environment)
-                    return None
-                except Exception as return_value:
-                    return return_value
-        else:
-            print  "ERROR: call to non-function"
     elif stmttype == "return":
         retval = eval_exp(tree[1], environment)
         raise Exception(retval)
     elif stmttype == "exp":
         eval_exp(tree[1], environment)
 
-# helper proc to handle function and if statement bodies (compound stmts)
-def eval_stmts(stmts, environment):
-    for stmt in stmts:
-        eval_stmt(stmt, environment)
+def interpret_js(tree):
+    global_env = (None, {'javascript output': ''}) # the space in the key prevents conflicts with identifiers
+    for elt in tree:
+        eval_elt(elt, global_env)
+    return global_env['javascript output']
+
+'''
+example of a procedure to optimise a js programme (as a parse tree) to remove
+unnecessary expressions. we do this before interpreting it, so that we can
+arrive at the *same* answer in less time than the original code.
+
+this is simple, in reality optiisation is a huge deal '''
+
+def optimize(tree):
+    elttype = tree[0]
+    if elttype == "binop":
+        (a, op, b) = tree[1:]
+        a = optimize(a)
+        b = optimize(b)
+        if op == "*" and b == ("number","1"):
+            return a
+        elif op == "*" and b == ("number","0"):
+            return ("number","0")
+        elif op == "+" and b == ("number","0"):
+            return a
+        return tree
+    return tree
+
+'''
+ultimate procedure is to
+1. provide words ("word-element","Hello") to a rendering component (missing)
+2. invoke js interpreter and render result of script
+3. extract and validate tags ('tag-element', 'b', [], [], 'b')] '''
+
+def interpret_html(trees):
+    for tree in trees:
+        nodetype = tree[0]
+        if nodetype == "word-elt":
+            word = tree[1]
+            return word
+        elif nodetype == 'javascript-elt':
+            js_text = tree[1]
+            js_ptree = javascript_parser.parse(js_text, lexer=javascript_lexer)
+            js_ptree = optimize(js_ptree)
+            return interpret_js(js_ptree)
+        elif nodetype == "tag-elt":
+            (tagname, tagargs, subtrees, closetagname) = tree[1:]
+            if closetagname != tagname:
+                raise Exception('doh! mismatched tags')
+            else:
+                # placeholder return stmt, pending final spec
+                try:
+                    return tagname + ' ' + interpret_html(subtrees)
+                except Exception as problem:
+                    print problem

@@ -1,5 +1,5 @@
 from interpreter import *
-'''
+
 html_simple = [("word-elt","Hello")]
 print interpret_html(html_simple)
 
@@ -17,7 +17,7 @@ print eval_exp(test_tree2, (None, {})) # 1776
 
 test_tree3 = ("binop", ("number","5"),"+",("binop",("number","7"),"-",("number","18")))
 print eval_exp(test_tree3, (None, {})) # -6
-'''
+
 environment = (None, {"x" : 2})
 
 tree = ("binop", ("identifier","x"), "+", ("number","2"))
@@ -29,4 +29,4 @@ print environment # (None, {"x" : 8.0})
 
 sqrt = ("function",("x"),(("return",("binop",("identifier","x"),"*",("identifier","x"))),),{})
 environment = (None, {"sqrt":sqrt})
-print eval_stmt(("call","sqrt",[("number","2")]), environment) # 4.0
+print eval_exp(("call","sqrt",[("number","2")]), environment) # 4.0
