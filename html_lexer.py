@@ -10,11 +10,11 @@ tokens = (
   'JAVASCRIPT'
 )
 states = (
-  ('htmlcomment','exclusive'), # once entered, no other rules will be considered
+  ('htmlcomment', 'exclusive'), # once entered, no other rules will be considered
   ('javascript', 'exclusive')
 )
 
-t_ignore = ' ' # shorthand way of passing over all whitespace
+t_INITIAL_htmlcomment_javascript_ignore = ' ' # shorthand way of passing over all whitespace in all states
 
 # rules. order is important
 # handling of comments: we will put the lexer into an explicit state, in which
@@ -28,14 +28,14 @@ def t_htmlcomment_end(token):
     token.lexer.lineno += token.value.count('\n') # ensure count of lines includes those in comment
     token.lexer.begin('INITIAL') # return lexer to normal
 
-def t_htmlcomment_error(token): # the charcters in the comment would result in errors without a rule
+def t_htmlcomment_error(token): # the characters in the comment would result in errors without a rule
     token.lexer.skip(1) # skip gathers the text up so that it's available to count the newlines
 
 # handling of javascript: similar to comments, except we eventually return the
 # whole script as one token. we'll also increment the line number
 def t_javascript(token):
     r'\<script\ type=\"text\/javascript\"\>'
-    token.lexer.code_start = token.lexer.lexpos # store the index of the charactacter at which the js begins
+    token.lexer.code_start = token.lexer.lexpos # store the index of the character at which the js begins
     token.lexer.begin('javascript') # put lexer in 'javascript' state
 
 def t_javascript_end(token):
@@ -46,6 +46,9 @@ def t_javascript_end(token):
     token.lexer.lineno += token.value.count('\n')
     token.lexer.begin('INITIAL')
     return token
+
+def t_javascript_error(token):
+    token.lexer.skip(1)
 
 def t_newline(token):
     r'\n'
