@@ -28,7 +28,7 @@ def t_htmlcomment_end(token):
     token.lexer.lineno += token.value.count('\n') # ensure count of lines includes those in comment
     token.lexer.begin('INITIAL') # return lexer to normal
 
-def t_htmlcomment_error(token): # the characters in the comment would result in errors without a rule
+def t_htmlcomment_javascript_error(token): # the characters in the comment would result in errors without a rule
     token.lexer.skip(1) # skip gathers the text up so that it's available to count the newlines
 
 # handling of javascript: similar to comments, except we eventually return the
@@ -46,9 +46,6 @@ def t_javascript_end(token):
     token.lexer.lineno += token.value.count('\n')
     token.lexer.begin('INITIAL')
     return token
-
-def t_javascript_error(token):
-    token.lexer.skip(1)
 
 def t_newline(token):
     r'\n'
