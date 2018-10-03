@@ -1,5 +1,5 @@
 from interpreter import *
-
+'''
 html_simple = [("word-elt","Hello")]
 print interpret_html(html_simple)
 
@@ -63,6 +63,6 @@ tricky(10);
 </script>
 </p>
 </html>"""
-html_ast = html_parser
-print interpret_html(webpage)
-'''
+html_ast = html_parser.parse(webpage, lexer=html_lexer)
+print html_ast
+print interpret_html(html_ast)

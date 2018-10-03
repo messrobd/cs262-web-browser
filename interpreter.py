@@ -167,15 +167,15 @@ ultimate procedure is to
 def interpret_html(trees):
     for tree in trees:
         nodetype = tree[0]
-        if nodetype == "word-elt":
+        if nodetype == "word_elt":
             word = tree[1]
             return word
-        elif nodetype == 'javascript-elt':
+        elif nodetype == 'javascript_elt':
             js_text = tree[1]
             js_ptree = js_parser.parse(js_text, lexer=js_lexer)
             js_ptree = optimize(js_ptree)
             return interpret_js(js_ptree)
-        elif nodetype == "tag-elt":
+        elif nodetype == "tag_elt":
             (tagname, tagargs, subtrees, closetagname) = tree[1:]
             if closetagname != tagname:
                 raise Exception('doh! mismatched tags')
