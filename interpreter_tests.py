@@ -30,6 +30,29 @@ sqrt = ("function",("x"),(("return",("binop",("identifier","x"),"*",("identifier
 environment = (None, {"sqrt":sqrt})
 print eval_elt(("call","sqrt",[("number","2")]), environment) # 4.0
 '''
+webpage_tagargs = '''<p id="whatever">This is my webpage! </p>'''
+html_ast = html_parser.parse(webpage_tagargs, lexer=html_lexer)
+print html_ast
+interpret_html(html_ast)
+
+webpage_anchor = '''<a href='http://whatever.com'>This is my link! </a>'''
+html_ast = html_parser.parse(webpage_anchor, lexer=html_lexer)
+print html_ast
+interpret_html(html_ast)
+
+webpage_script_simple = """<html>
+<h1>Simple script</h1>
+<p>
+This paragraph starts in HTML ...
+<script type="text/javascript">write("This is my script!");
+</script>
+... and this paragraph finishes in HTML.
+</p>
+</html>"""
+html_ast = html_parser.parse(webpage_script_simple, lexer=html_lexer)
+print html_ast
+interpret_html(html_ast)
+
 webpage = """<html>
 <h1>JavaScript That Produces HTML</h1>
 <p>
@@ -64,5 +87,5 @@ tricky(10);
 </p>
 </html>"""
 html_ast = html_parser.parse(webpage, lexer=html_lexer)
-print html_ast
-print interpret_html(html_ast)
+#print html_ast
+#print interpret_html(html_ast)

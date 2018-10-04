@@ -134,14 +134,14 @@ def interpret_js(tree):
     global_env = (None, {'javascript output': ''}) # the space in the key prevents conflicts with identifiers
     for elt in tree:
         eval_elt(elt, global_env)
-    return global_env['javascript output']
+    return global_env[1]['javascript output']
 
 '''
 example of a procedure to optimise a js programme (as a parse tree) to remove
 unnecessary expressions. we do this before interpreting it, so that we can
 arrive at the *same* answer in less time than the original code.
 
-this is simple, in reality optimisation is a huge deal '''
+this example is simple, in reality optimisation is a huge deal '''
 
 def optimize(tree):
     elttype = tree[0]
@@ -169,12 +169,7 @@ def interpret_html(trees):
         nodetype = tree[0]
         if nodetype == "word_elt":
             word = tree[1]
-            return word
-        elif nodetype == 'javascript_elt':
-            js_text = tree[1]
-            js_ptree = js_parser.parse(js_text, lexer=js_lexer)
-            js_ptree = optimize(js_ptree)
-            return interpret_js(js_ptree)
+            print word
         elif nodetype == "tag_elt":
             (tagname, tagargs, subtrees, closetagname) = tree[1:]
             if closetagname != tagname:
@@ -182,6 +177,11 @@ def interpret_html(trees):
             else:
                 # placeholder return stmt, pending final spec
                 try:
-                    return interpret_html(subtrees)
+                    interpret_html(subtrees)
                 except Exception as problem:
                     print problem
+        elif nodetype == 'javascript_elt':
+            js_text = tree[1]
+            js_ptree = js_parser.parse(js_text, lexer=js_lexer)
+            js_ptree = optimize(js_ptree)
+            print interpret_js(js_ptree)
