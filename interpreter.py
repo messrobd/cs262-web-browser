@@ -10,6 +10,58 @@ js_parser = yacc.yacc(module=js_parser)
 html_lexer = lex.lex(module=html_lexer)
 html_parser = yacc.yacc(module=html_parser)
 
+'''
+procedure evaluates an expression (1 + 2, x + y). variable values are sought in
+the current environment frame, then recursively up to global '''
+
+def eval_exp(tree, environment):
+    exptype = tree[0]
+    if exptype == "number":
+        return float(tree[1])
+    elif exptype == "string":
+        return tree[1]
+    elif exptype == "true":
+        return True
+    elif exptype == "false":
+        return False
+    elif exptype == "not":
+        return not(eval_exp(tree[1], environment))
+    elif exptype == "binop":
+        (left_child, operator, right_child) = tree[1:]
+        x = eval_exp(left_child, environment)
+        y = eval_exp(right_child, environment)
+        return perform_binop(x, operator, y)
+    elif exptype == "identifier":
+        vname = tree[1]
+        value = env_lookup(vname, environment)
+        if value == None:
+            print "ERROR: unbound variable " + vname
+        else:
+            return value
+    elif exptype == "call":
+        (fname, args) = tree[1:]
+        fvalue = env_lookup(fname, environment)
+        if fname == 'write': # write generates our ouput to the html interpreter ==> special handling
+            argval = eval_exp(fargs[0], environment)
+            output_sofar = env_lookup('javascript output', environment)
+            env_update('javascript output' + output_sofar + str(argval), environment)
+        elif fvalue[0] == "function":
+            (fparams, fbody, fenv) = fvalue[1:]
+            if len(fparams) != len(args):
+                print "ERROR: wrong number of args"
+            else:
+                env_vars = {}
+                for param, arg in zip(fparams, args):
+                    env_vars[param] = eval_exp(arg, environment)
+                new_environment = (fenv, env_vars)
+                try:
+                    eval_stmts(fbody, new_environment)
+                    return None
+                except Exception as return_value:
+                    return return_value
+        else:
+            print  "ERROR: call to non-function"
+
 #helper proc to simplify eval_exp()
 def perform_binop(x, operator, y):
     if operator == '||':
@@ -51,17 +103,9 @@ def env_update(vname, value, environment):
     elif not (environment[0] == None):
         env_update(vname, value, environment[0])
 
-# helper proc to handle function and if statement bodies (compound stmts)
-def eval_stmts(stmts, environment):
-    for stmt in stmts:
-        eval_elt(stmt, environment)
-
 '''
-procedure evaluates
-* statements (reminder: statement can include expression, but
+procedure evaluates statements (reminder: statement can include expression, but
 not the other way round)
-* expressions (1 + 2, x + y). variable values are sought in
-the current environment frame, then recursively up to global
 
 a function call creates a new environment frame as a child of the frame in
 which the function is declared. this is to support closures, I'm certain
@@ -69,66 +113,28 @@ which the function is declared. this is to support closures, I'm certain
 return statements are implemented using exceptions, I guess as a simple way of
 transporting the return payload '''
 
-def eval_elt(tree, environment):
-    elttype = tree[0]
-    if elttype == "number":
-        return float(tree[1])
-    elif elttype == "string":
-        return tree[1]
-    elif elttype == "true":
-        return True
-    elif elttype == "false":
-        return False
-    elif elttype == "not":
-        return not(eval_exp(tree[1], environment))
-    elif elttype == "binop":
-        (left_child, operator, right_child) = tree[1:]
-        x = eval_elt(left_child, environment)
-        y = eval_elt(right_child, environment)
-        return perform_binop(x, operator, y)
-    elif elttype == "identifier":
-        vname = tree[1]
-        value = env_lookup(vname, environment)
-        if value == None:
-            print "ERROR: unbound variable " + vname
-        else:
-            return value
-    elif elttype == "call":
-        (fname, args) = tree[1:]
-        fvalue = env_lookup(fname, environment)
-        if fname == 'write': # write generates our ouput to the html interpreter ==> special handling
-            argval = eval_elt(fargs[0], environment)
-            output_sofar = env_lookup('javascript output', environment)
-            env_update('javascript output' + output_sofar + str(argval), environment)
-        elif fvalue[0] == "function":
-            (fparams, fbody, fenv) = fvalue[1:]
-            if len(fparams) != len(args):
-                print "ERROR: wrong number of args"
-            else:
-                env_vars = {}
-                for param, arg in zip(fparams, args):
-                    env_vars[param] = eval_elt(arg, environment)
-                new_environment = (fenv, env_vars)
-                try:
-                    eval_stmts(fbody, new_environment)
-                    return None
-                except Exception as return_value:
-                    return return_value
-        else:
-            print  "ERROR: call to non-function"
-    elif elttype == "assign":
+# helper proc to handle function and if statement bodies (compound stmts)
+def eval_stmts(stmts, environment):
+    for stmt in stmts:
+        eval_stmt(stmt, environment)
+
+def eval_stmt(tree, environment):
+    stmttype = tree[0]
+    if stmttype == "assign":
         (variable_name, right_child) = tree[1:]
-        new_value = eval_elt(right_child, environment)
+        new_value = eval_exp(right_child, environment)
         env_update(variable_name, new_value, environment)
-    elif elttype == "if-then-else":
+    elif stmttype == "if-then-else":
         (conditional_exp, then_stmts, else_stmts) = tree[1:]
-        if eval_elt(conditional_exp, environment):
+        if eval_exp(conditional_exp, environment):
             return eval_stmts(then_stmts, environment) # TODO: check stmts is always a list
         else:
             return eval_stmts(else_stmts, environment)
-    elif elttype == "return":
-        retval = eval_elt(tree[1], environment)
+    elif stmttype == "return":
+        retval = eval_exp(tree[1], environment)
         raise Exception(retval)
+    elif stmttype == "exp":
+        eval_exp(tree[1], environment)
 
 def interpret_js(tree):
     global_env = (None, {'javascript output': ''}) # the space in the key prevents conflicts with identifiers
