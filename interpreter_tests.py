@@ -31,12 +31,41 @@ sqrt = ("function",("x"),(("return",("binop",("identifier","x"),"*",("identifier
 environment = (None, {"sqrt":sqrt})
 print eval_exp(("call","sqrt",[("number","2")]), environment) # 4.0
 '''
-webpage_tagargs = '''<p id="whatever">This is my webpage! </p>'''
+script_var = '''
+var whatever = 0;
+write(whatever); '''
+js_ast = js_parser.parse(script_var, lexer=js_lexer)
+print js_ast
+print interpret_js(js_ast)
+
+script_func = '''
+function tricky(i) {
+  if (i <= 0) {
+    return i;
+  } ;
+  if ((i % 2) == 1) {
+    write("<b>");
+    write(i);
+    write("</b>");
+  } else {
+    write("<i>");
+    write(i);
+    write("</i>");
+  } ;
+  return tricky(i - 1);
+}
+tricky(10); '''
+js_ast = js_parser.parse(script_func, lexer=js_lexer)
+print js_ast
+print interpret_js(js_ast)
+
+'''
+webpage_tagargs = """<p id="whatever">This is my webpage! </p>"""
 html_ast = html_parser.parse(webpage_tagargs, lexer=html_lexer)
 print html_ast
 interpret_html(html_ast)
 
-webpage_anchor = '''<a href='http://whatever.com'>This is my link! </a>'''
+webpage_anchor = """<a href='http://whatever.com'>This is my link! </a>"""
 html_ast = html_parser.parse(webpage_anchor, lexer=html_lexer)
 print html_ast
 interpret_html(html_ast)
@@ -90,3 +119,4 @@ tricky(10);
 html_ast = html_parser.parse(webpage, lexer=html_lexer)
 print html_ast
 print interpret_html(html_ast)
+'''

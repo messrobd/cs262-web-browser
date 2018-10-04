@@ -58,37 +58,39 @@ procedure evaluates an expression (1 + 2, x + y). variable values are sought in
 the current environment frame, then recursively up to global '''
 
 def eval_exp(tree, environment):
-    exptype = tree[0]
-    if exptype == "number":
+    exp_type = tree[0]
+    if exp_type == "number":
         return float(tree[1])
-    elif exptype == "string":
+    elif exp_type == "string":
         return tree[1]
-    elif exptype == "true":
+    elif exp_type == "true":
         return True
-    elif exptype == "false":
+    elif exp_type == "false":
         return False
-    elif exptype == "not":
+    elif exp_type == "not":
         return not(eval_exp(tree[1], environment))
-    elif exptype == "binop":
+    elif exp_type == "binop":
         (left_child, operator, right_child) = tree[1:]
         x = eval_exp(left_child, environment)
         y = eval_exp(right_child, environment)
         return perform_binop(x, operator, y)
-    elif exptype == "identifier":
+    elif exp_type == "identifier":
         vname = tree[1]
         value = env_lookup(vname, environment)
         if value == None:
             print "ERROR: unbound variable " + vname
         else:
             return value
-    elif exptype == "call":
+    elif exp_type == "call":
         (fname, fargs) = tree[1:]
-        fvalue = env_lookup(fname, environment)
         if fname == 'write': # write generates our ouput to the html interpreter ==> special handling
             argval = eval_exp(fargs[0], environment)
             output_sofar = env_lookup('javascript output', environment)
             env_update('javascript output', output_sofar + str(argval), environment)
-        elif fvalue[0] == "function":
+            return
+        fvalue = env_lookup(fname, environment)
+        print environment
+        if fvalue[0] == "function":
             (fparams, fbody, fenv) = fvalue[1:]
             if len(fparams) != len(fargs):
                 print "ERROR: wrong number of args"
@@ -116,26 +118,35 @@ return statements are implemented using exceptions, I guess as a simple way of
 transporting the return payload '''
 
 # helper proc to handle function and if statement bodies (compound stmts)
+def declare(tree, environment):
+    stmt_type = tree[0]
+    if stmt_type == 'var':
+        (vname, value) = tree[1:]
+        environment[1][vname] = eval_exp(value, environment)
+
 def eval_stmts(stmts, environment):
     for stmt in stmts:
         eval_stmt(stmt, environment)
 
 def eval_stmt(tree, environment):
-    stmttype = tree[0]
-    if stmttype == "assign":
-        (variable_name, right_child) = tree[1:]
+    stmt_type = tree[0]
+    if stmt_type == 'var':
+        (var_name, value) = tree[1:]
+        environment[1][var_name] = eval_exp(value, environment)
+    elif stmt_type == "assign":
+        (var_name, right_child) = tree[1:]
         new_value = eval_exp(right_child, environment)
-        env_update(variable_name, new_value, environment)
-    elif stmttype == "if-then-else":
+        env_update(var_name, new_value, environment)
+    elif stmt_type == "if-then-else":
         (conditional_exp, then_stmts, else_stmts) = tree[1:]
         if eval_exp(conditional_exp, environment):
             return eval_stmts(then_stmts, environment) # TODO: check stmts is always a list
         else:
             return eval_stmts(else_stmts, environment)
-    elif stmttype == "return":
+    elif stmt_type == "return":
         retval = eval_exp(tree[1], environment)
         raise Exception(retval)
-    elif stmttype == "exp":
+    elif stmt_type == "exp":
         eval_exp(tree[1], environment)
 
 def interpret_js(trees):
@@ -144,8 +155,11 @@ def interpret_js(trees):
         tree_type = tree[0]
         if tree_type == 'stmt':
             eval_stmt(tree[1], global_env)
-        elif tree_type == 'exp':
-            eval_exp(tree[1], global_env)
+        elif tree_type == 'function':
+            print tree[0], tree[1]
+            (fname, fargs, fbody) = tree[1:]
+            fvalue = ('function', fargs, fbody, global_env) # TODO: probably isn't general enough, need to support functions declared in functions
+            env_update(fname, fvalue, global_env)
     return global_env[1]['javascript output']
 
 '''
