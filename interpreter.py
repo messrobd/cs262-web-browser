@@ -39,19 +39,19 @@ def eval_exp(tree, environment):
         else:
             return value
     elif exptype == "call":
-        (fname, args) = tree[1:]
+        (fname, fargs) = tree[1:]
         fvalue = env_lookup(fname, environment)
         if fname == 'write': # write generates our ouput to the html interpreter ==> special handling
             argval = eval_exp(fargs[0], environment)
             output_sofar = env_lookup('javascript output', environment)
-            env_update('javascript output' + output_sofar + str(argval), environment)
+            env_update('javascript output', output_sofar + str(argval), environment)
         elif fvalue[0] == "function":
             (fparams, fbody, fenv) = fvalue[1:]
-            if len(fparams) != len(args):
+            if len(fparams) != len(fargs):
                 print "ERROR: wrong number of args"
             else:
                 env_vars = {}
-                for param, arg in zip(fparams, args):
+                for param, arg in zip(fparams, fargs):
                     env_vars[param] = eval_exp(arg, environment)
                 new_environment = (fenv, env_vars)
                 try:
@@ -136,10 +136,14 @@ def eval_stmt(tree, environment):
     elif stmttype == "exp":
         eval_exp(tree[1], environment)
 
-def interpret_js(tree):
+def interpret_js(trees):
     global_env = (None, {'javascript output': ''}) # the space in the key prevents conflicts with identifiers
-    for elt in tree:
-        eval_elt(elt, global_env)
+    for tree in trees:
+        tree_type = tree[0]
+        if tree_type == 'stmt':
+            eval_stmt(tree[1], global_env)
+        elif tree_type == 'exp':
+            eval_exp(tree[1], global_env)
     return global_env[1]['javascript output']
 
 '''
@@ -150,8 +154,8 @@ arrive at the *same* answer in less time than the original code.
 this example is simple, in reality optimisation is a huge deal '''
 
 def optimize(tree):
-    elttype = tree[0]
-    if elttype == "binop":
+    elt_type = tree[0]
+    if elt_type == "binop":
         (a, op, b) = tree[1:]
         a = optimize(a)
         b = optimize(b)
