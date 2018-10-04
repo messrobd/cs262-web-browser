@@ -89,7 +89,6 @@ def eval_exp(tree, environment):
             env_update('javascript output', output_sofar + str(argval), environment)
             return
         fvalue = env_lookup(fname, environment)
-        print environment
         if fvalue[0] == "function":
             (fparams, fbody, fenv) = fvalue[1:]
             if len(fparams) != len(fargs):
@@ -121,8 +120,12 @@ transporting the return payload '''
 def declare(tree, environment):
     stmt_type = tree[0]
     if stmt_type == 'var':
-        (vname, value) = tree[1:]
-        environment[1][vname] = eval_exp(value, environment)
+        (identifier, value) = tree[1:]
+        value = eval_exp(value, environment)
+    elif stmt_type == 'function':
+        (identifier, args, body) = tree[1:]
+        value = (stmt_type, args, body, environment)
+    environment[1][identifier] = value
 
 def eval_stmts(stmts, environment):
     for stmt in stmts:
@@ -131,8 +134,7 @@ def eval_stmts(stmts, environment):
 def eval_stmt(tree, environment):
     stmt_type = tree[0]
     if stmt_type == 'var':
-        (var_name, value) = tree[1:]
-        environment[1][var_name] = eval_exp(value, environment)
+        declare(tree, environment)
     elif stmt_type == "assign":
         (var_name, right_child) = tree[1:]
         new_value = eval_exp(right_child, environment)
@@ -156,10 +158,7 @@ def interpret_js(trees):
         if tree_type == 'stmt':
             eval_stmt(tree[1], global_env)
         elif tree_type == 'function':
-            print tree[0], tree[1]
-            (fname, fargs, fbody) = tree[1:]
-            fvalue = ('function', fargs, fbody, global_env) # TODO: probably isn't general enough, need to support functions declared in functions
-            env_update(fname, fvalue, global_env)
+            declare(tree, global_env) # TODO: probably isn't general enough, need to support functions declared in functions
     return global_env[1]['javascript output']
 
 '''
