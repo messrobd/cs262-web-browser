@@ -88,5 +88,5 @@ tricky(10);
 </p>
 </html>"""
 html_ast = html_parser.parse(webpage, lexer=html_lexer)
-#print html_ast
-#print interpret_html(html_ast)
+print html_ast
+print interpret_html(html_ast)

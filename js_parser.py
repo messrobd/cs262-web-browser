@@ -146,7 +146,7 @@ precedence = (
     ('left', 'EQUALEQUAL'),
     ('left', 'LT', 'GT', 'LE', 'GE'),
     ('left', 'PLUS', 'MINUS'), # lower precedence to the top. left indicates associativity
-    ('left', 'TIMES', 'DIVIDE'), # higher precedence to the bottom
+    ('left', 'TIMES', 'DIVIDE', 'MODULO'), # higher precedence to the bottom
     ('right', 'NOT')
 )
 
@@ -169,7 +169,8 @@ def p_binop(p):
             | exp PLUS exp
             | exp MINUS exp
             | exp TIMES exp
-            | exp DIVIDE exp '''
+            | exp DIVIDE exp
+            | exp MODULO exp '''
     p[0] = ('binop', p[1], p[2], p[3])
 
 def p_exp_call(p):

@@ -34,6 +34,8 @@ def perform_binop(x, operator, y):
         return x * y
     elif operator == '/':
         return x / y
+    elif operator == '%':
+        return x % y
 
 # helper proc to look up variables. begins in the current env frame, bubbles up to global
 def env_lookup(vname, environment):

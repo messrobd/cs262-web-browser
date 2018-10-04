@@ -23,7 +23,7 @@ def test_parser(input_string):
 lexer = lex.lex(module=js_lexer)
 parser = yacc.yacc(module=js_parser)
 
-test_tokens = """ - !  && () * , / ; { || } + < <= = == > >= else false function
+test_tokens = """ - !  && () * , / % ; { || } + < <= = == > >= else false function
 if return true var """
 print test_lexer(test_tokens)
 
@@ -42,7 +42,6 @@ print test_lexer(input1)
 
 input2 = '-12x34'
 print test_lexer(input2)
-
 '''
 js_simple_stmt = 'var president = trump;'
 #print test_lexer(js_simple_stmt)
@@ -79,6 +78,10 @@ if cherry {
 print test_parser(js_if_else)
 '''
 js_simple_exp = 'sum = 1 + 2;'
+#print test_lexer(js_simple_exp)
+print test_parser(js_simple_exp)
+
+js_simple_exp = 'sum = 16 % 3;'
 #print test_lexer(js_simple_exp)
 print test_parser(js_simple_exp)
 

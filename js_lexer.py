@@ -25,6 +25,7 @@ tokens = (
         'LPAREN',       # (
         'LT',           # <
         'MINUS',        # -
+        'MODULO',       # %
         'NOT',          # !
         'OROR',         # ||
         'PLUS',         # +
@@ -161,6 +162,10 @@ def t_PLUS(token):
 
 def t_MINUS(token):
     r'\-'
+    return token
+
+def t_MODULO(token):
+    r'\%'
     return token
 
 def t_TIMES(token):
