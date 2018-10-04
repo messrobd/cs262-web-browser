@@ -195,5 +195,6 @@ def interpret_html(trees):
         elif nodetype == 'javascript_elt':
             js_text = tree[1]
             js_ptree = js_parser.parse(js_text, lexer=js_lexer)
-            js_ptree = optimize(js_ptree)
+            print js_ptree
+            #js_ptree = optimize(js_ptree)
             print interpret_js(js_ptree)

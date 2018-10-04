@@ -22,7 +22,7 @@ def test_parser(input_string):
 
 lexer = lex.lex(module=js_lexer)
 parser = yacc.yacc(module=js_parser)
-
+'''
 test_tokens = """ - !  && () * , / % ; { || } + < <= = == > >= else false function
 if return true var """
 print test_lexer(test_tokens)
@@ -103,3 +103,22 @@ print test_parser(js_not)
 
 js_nested_calls = 'apply(1, 2 + eval(recursion), sqrt(2));'
 print test_parser(js_nested_calls)
+'''
+js_script = '''function tricky(i) {
+  if (i <= 0) {
+    return i;
+  } ;
+  if ((i % 2) == 1) {
+    write("<b>");
+    write(i);
+    write("</b>");
+  } else {
+    write("<i>");
+    write(i);
+    write("</i>");
+  } 
+  return tricky(i - 1);
+}
+tricky(10);'''
+print test_lexer(js_script)
+print test_parser(js_script)

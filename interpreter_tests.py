@@ -80,7 +80,7 @@ function tricky(i) {
     write("<i>");
     write(i);
     write("</i>");
-  }
+  } ;
   return tricky(i - 1);
 }
 tricky(10);
