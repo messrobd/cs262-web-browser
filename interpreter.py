@@ -139,10 +139,14 @@ def eval_stmt(tree, environment):
         (var_name, right_child) = tree[1:]
         new_value = eval_exp(right_child, environment)
         env_update(var_name, new_value, environment)
+    elif stmt_type == "if-then":
+        (conditional_exp, then_stmts) = tree[1:]
+        if eval_exp(conditional_exp, environment):
+            return eval_stmts(then_stmts, environment)
     elif stmt_type == "if-then-else":
         (conditional_exp, then_stmts, else_stmts) = tree[1:]
         if eval_exp(conditional_exp, environment):
-            return eval_stmts(then_stmts, environment) # TODO: check stmts is always a list
+            return eval_stmts(then_stmts, environment)
         else:
             return eval_stmts(else_stmts, environment)
     elif stmt_type == "return":
@@ -207,7 +211,8 @@ def interpret_html(trees):
                     print problem
         elif nodetype == 'javascript_elt':
             js_text = tree[1]
-            js_ptree = js_parser.parse(js_text, lexer=js_lexer)
-            print js_ptree
-            #js_ptree = optimize(js_ptree)
-            print interpret_js(js_ptree)
+            js_ast = js_parser.parse(js_text, lexer=js_lexer)
+            #js_ptree = optimize(js_ast)
+            js_output = interpret_js(js_ast)
+            new_html_ast = html_parser.parse(js_output, lexer=html_lexer)
+            interpret_html(new_html_ast)

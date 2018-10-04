@@ -30,36 +30,31 @@ print environment # (None, {"x" : 8.0})
 sqrt = ("function",("x"),(("return",("binop",("identifier","x"),"*",("identifier","x"))),),{})
 environment = (None, {"sqrt":sqrt})
 print eval_exp(("call","sqrt",[("number","2")]), environment) # 4.0
-'''
-script_var = '''
+
+script_var = """
 var whatever = 0;
-write(whatever); '''
+write(whatever); """
 js_ast = js_parser.parse(script_var, lexer=js_lexer)
 print js_ast
 print interpret_js(js_ast)
 
-script_func = '''
+script_func = """
 function tricky(i) {
   if (i <= 0) {
     return i;
   } ;
   if ((i % 2) == 1) {
-    write("<b>");
     write(i);
-    write("</b>");
   } else {
-    write("<i>");
     write(i);
-    write("</i>");
   } ;
   return tricky(i - 1);
 }
-tricky(10); '''
+tricky(10); """
 js_ast = js_parser.parse(script_func, lexer=js_lexer)
 print js_ast
 print interpret_js(js_ast)
 
-'''
 webpage_tagargs = """<p id="whatever">This is my webpage! </p>"""
 html_ast = html_parser.parse(webpage_tagargs, lexer=html_lexer)
 print html_ast
@@ -80,9 +75,9 @@ This paragraph starts in HTML ...
 </p>
 </html>"""
 html_ast = html_parser.parse(webpage_script_simple, lexer=html_lexer)
-print html_ast
+#print html_ast
 interpret_html(html_ast)
-
+'''
 webpage = """<html>
 <h1>JavaScript That Produces HTML</h1>
 <p>
@@ -117,6 +112,5 @@ tricky(10);
 </p>
 </html>"""
 html_ast = html_parser.parse(webpage, lexer=html_lexer)
-print html_ast
-print interpret_html(html_ast)
-'''
+#print html_ast
+interpret_html(html_ast)
