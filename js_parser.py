@@ -18,6 +18,7 @@ complete the JS parser for statements. grammar:
     stmt => IDENTIFIER = exp
     stmt => RETURN exp
     stmt => VAR IDENTIFIER = exp
+    stmt => VAR IDENTIFIER = FUNCTION ( optparams ) compoundstmt
     stmt => exp
 
 learnings:
@@ -27,7 +28,7 @@ learnings:
     a syntax error
     * comments inside rules also seem to cause the parser to fail with a syntax
     error
-    * it was a good move trying to instantiate the parser before trying to feed
+    * it was a good move trying to instann tiate the parser before trying to feed
     it strings
     * tokens can lex correctly and then throw cryptic errors from the parser, or
     parse in an unexpected (to me) way
@@ -111,6 +112,10 @@ def p_stmt_return(p):
 def p_stmt_declare(p):
     'stmt : VAR IDENTIFIER EQUAL exp'
     p[0] = ('var', p[2], p[4])
+
+def p_stmt_declare_funcexp(p):
+    'stmt : VAR IDENTIFIER EQUAL FUNCTION LPAREN optparams RPAREN compoundstmt'
+    p[0] = ('function', p[2], p[6], p[8])
 
 # desired pt: ('exp', exp)
 def p_stmt_exp(p):

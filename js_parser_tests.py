@@ -42,7 +42,7 @@ print test_lexer(input1)
 
 input2 = '-12x34'
 print test_lexer(input2)
-'''
+
 js_simple_stmt = 'var president = trump;'
 #print test_lexer(js_simple_stmt)
 print test_parser(js_simple_stmt)
@@ -76,7 +76,7 @@ if cherry {
 } ;
 """
 print test_parser(js_if_else)
-'''
+
 js_simple_exp = 'sum = 1 + 2;'
 #print test_lexer(js_simple_exp)
 print test_parser(js_simple_exp)
@@ -103,8 +103,8 @@ print test_parser(js_not)
 
 js_nested_calls = 'apply(1, 2 + eval(recursion), sqrt(2));'
 print test_parser(js_nested_calls)
-'''
-js_script = '''function tricky(i) {
+
+js_script = """function tricky(i) {
   if (i <= 0) {
     return i;
   } ;
@@ -116,9 +116,13 @@ js_script = '''function tricky(i) {
     write("<i>");
     write(i);
     write("</i>");
-  } 
+  } ;
   return tricky(i - 1);
 }
-tricky(10);'''
+tricky(10);"""
 print test_lexer(js_script)
 print test_parser(js_script)
+'''
+js_func_var = "var myfun = function() { return nothing ; };"
+print test_lexer(js_func_var)
+print test_parser(js_func_var)
