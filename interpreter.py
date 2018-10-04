@@ -10,6 +10,47 @@ js_parser = yacc.yacc(module=js_parser)
 html_lexer = lex.lex(module=html_lexer)
 html_parser = yacc.yacc(module=html_parser)
 
+#helper proc to simplify eval_exp()
+def perform_binop(x, operator, y):
+    if operator == '||':
+        return x or y
+    elif operator == '&&':
+        return x and y
+    elif operator == '==':
+        return x == y
+    elif operator == '<':
+        return x < y
+    elif operator == '>':
+        return x > y
+    elif operator == '<=':
+        return x <= y
+    elif operator == '>=':
+        return x >= y
+    elif operator == '+':
+        return x + y
+    elif operator == '-':
+        return x - y
+    elif operator == '*':
+        return x * y
+    elif operator == '/':
+        return x / y
+
+# helper proc to look up variables. begins in the current env frame, bubbles up to global
+def env_lookup(vname, environment):
+    if vname in environment[1]:
+        return (environment[1])[vname]
+    elif environment[0] == None:
+        return None
+    else:
+        return env_lookup(vname, environment[0])
+
+# helper proc to update variables. only updates, does not define new variables
+def env_update(vname, value, environment):
+    if vname in environment[1]:
+        (environment[1])[vname] = value
+    elif not (environment[0] == None):
+        env_update(vname, value, environment[0])
+
 '''
 procedure evaluates an expression (1 + 2, x + y). variable values are sought in
 the current environment frame, then recursively up to global '''
@@ -61,47 +102,6 @@ def eval_exp(tree, environment):
                     return return_value
         else:
             print  "ERROR: call to non-function"
-
-#helper proc to simplify eval_exp()
-def perform_binop(x, operator, y):
-    if operator == '||':
-        return x or y
-    elif operator == '&&':
-        return x and y
-    elif operator == '==':
-        return x == y
-    elif operator == '<':
-        return x < y
-    elif operator == '>':
-        return x > y
-    elif operator == '<=':
-        return x <= y
-    elif operator == '>=':
-        return x >= y
-    elif operator == '+':
-        return x + y
-    elif operator == '-':
-        return x - y
-    elif operator == '*':
-        return x * y
-    elif operator == '/':
-        return x / y
-
-# helper proc to look up variables. begins in the current env frame, bubbles up to global
-def env_lookup(vname, environment):
-    if vname in environment[1]:
-        return (environment[1])[vname]
-    elif environment[0] == None:
-        return None
-    else:
-        return env_lookup(vname, environment[0])
-
-# helper proc to update variables. only updates, does not define new variables
-def env_update(vname, value, environment):
-    if vname in environment[1]:
-        (environment[1])[vname] = value
-    elif not (environment[0] == None):
-        env_update(vname, value, environment[0])
 
 '''
 procedure evaluates statements (reminder: statement can include expression, but
