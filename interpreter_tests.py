@@ -77,7 +77,7 @@ This paragraph starts in HTML ...
 html_ast = html_parser.parse(webpage_script_simple, lexer=html_lexer)
 #print html_ast
 interpret_html(html_ast)
-'''
+
 webpage = """<html>
 <h1>JavaScript That Produces HTML</h1>
 <p>
@@ -114,3 +114,23 @@ tricky(10);
 html_ast = html_parser.parse(webpage, lexer=html_lexer)
 #print html_ast
 interpret_html(html_ast)
+
+js_func_var = "var myfun = function() { return true ; }; write(myfun());"
+js_ast = js_parser.parse(js_func_var, lexer=js_lexer)
+print js_ast
+print interpret_js(js_ast)
+'''
+js_func_closure = """
+function makeGreeting(salutation) {
+  var punc = "!";
+  var greeting = function(person) {
+    write(salutation);
+    write(person + punc);
+  };
+  return greeting;
+}
+var greet = makeGreeting("ciao");
+//greet("meg"); """
+js_ast = js_parser.parse(js_func_closure, lexer=js_lexer)
+print js_ast
+print interpret_js(js_ast)
