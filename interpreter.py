@@ -102,7 +102,7 @@ def eval_exp(tree, environment):
                     eval_stmts(fbody, new_environment)
                     return None
                 except Exception as return_value:
-                    return return_value
+                    return return_value.args[0]
         else:
             print  "ERROR: call to non-function"
 
@@ -118,12 +118,16 @@ transporting the return payload '''
 
 # helper proc to handle function and if statement bodies (compound stmts)
 def declare(tree, environment):
-    stmt_type = tree[0]
+    (stmt_type, identifier) = tree[:2]
     if stmt_type == 'var':
-        (identifier, value) = tree[1:]
-        value = eval_exp(value, environment)
+        value = tree[2]
+        if value[0] == 'function':
+            (args, body) = value[1:]
+            value = (value[0], args, body, environment)
+        else:
+            value = eval_exp(value, environment)
     elif stmt_type == 'function':
-        (identifier, args, body) = tree[1:]
+        (args, body) = tree[2:]
         value = (stmt_type, args, body, environment)
     environment[1][identifier] = value
 

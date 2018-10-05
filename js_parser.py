@@ -18,7 +18,6 @@ complete the JS parser for statements. grammar:
     stmt => IDENTIFIER = exp
     stmt => RETURN exp
     stmt => VAR IDENTIFIER = exp
-    stmt => VAR IDENTIFIER = FUNCTION ( optparams ) compoundstmt
     stmt => exp
 
 learnings:
@@ -113,10 +112,6 @@ def p_stmt_declare(p):
     'stmt : VAR IDENTIFIER EQUAL exp'
     p[0] = ('var', p[2], p[4])
 
-def p_stmt_declare_funcexp(p):
-    'stmt : VAR IDENTIFIER EQUAL FUNCTION LPAREN optparams RPAREN compoundstmt'
-    p[0] = ('function', p[2], p[6], p[8])
-
 # desired pt: ('exp', exp)
 def p_stmt_exp(p):
     'stmt : exp'
@@ -135,6 +130,7 @@ complete the JS parser for statements. grammar:
     args => exp , args                  # recursive term for >1 args
     args => exp                         # base case ==1 args
     exp => IDENTIFIER                   # base cases
+    exp => ANONFUNC
     exp => NUMBER
     exp => STRING
     exp => TRUE
@@ -181,6 +177,10 @@ def p_binop(p):
 def p_exp_call(p):
     'exp : IDENTIFIER LPAREN optargs RPAREN'
     p[0] = ('call', p[1], p[3])
+
+def p_exp_anonfunc(p):
+    'exp : FUNCTION LPAREN optparams RPAREN compoundstmt'
+    p[0] = ('function', p[3], p[5])
 
 def p_optargs(p):
     'optargs : args' # optarg non-terminal must match an input (above)
