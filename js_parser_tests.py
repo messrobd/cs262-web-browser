@@ -123,6 +123,20 @@ tricky(10);"""
 print test_lexer(js_script)
 print test_parser(js_script)
 '''
-js_func_var = "var myfun = function() { return nothing ; };"
+js_func_var = "var myfun = function() { return true ; }; write(myfun());"
 print test_lexer(js_func_var)
 print test_parser(js_func_var)
+
+js_func_closure = """
+function makeGreeting(salutation) {
+  var punc = "!";
+  var greeting = function(person) {
+    write(salutation);
+    write(person + punc);
+  };
+  return greeting;
+}
+var greet = makeGreeting("ciao");
+greet("meg"); """
+print test_lexer(js_func_closure)
+print test_parser(js_func_closure)
