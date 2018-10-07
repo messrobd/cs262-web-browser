@@ -8,7 +8,7 @@ print interpret_html(html_body)
 
 html_negative = [('tag-elt', 'body', [], [('tag-elt', 'i', [], [('word-elt', 'Hello World')], 'b')], 'body')]
 print interpret_html(html_negative)
-
+'''
 test_tree1 = ("binop", ("number","5"),"+",("number","8"))
 print eval_exp(test_tree1, (None, {})) # 13
 
@@ -22,7 +22,7 @@ environment = (None, {"x" : 2})
 
 tree = ("binop", ("identifier","x"), "+", ("number","2"))
 print eval_exp(tree, environment) # 4.0
-
+'''
 tree = ("if-then-else", ("true", "true"), [("assign", "x", ("number", "8"))], [("assign", "x", "5")])
 eval_stmt(tree, environment)
 print environment # (None, {"x" : 8.0})
@@ -77,7 +77,7 @@ This paragraph starts in HTML ...
 html_ast = html_parser.parse(webpage_script_simple, lexer=html_lexer)
 #print html_ast
 interpret_html(html_ast)
-
+'''
 webpage = """<html>
 <h1>JavaScript That Produces HTML</h1>
 <p>
@@ -114,7 +114,7 @@ tricky(10);
 html_ast = html_parser.parse(webpage, lexer=html_lexer)
 #print html_ast
 interpret_html(html_ast)
-'''
+
 js_var_call = """
 function assign() {
   return true;
@@ -142,5 +142,40 @@ function makeGreeting(salutation) {
 var greet = makeGreeting("ciao");
 greet("meg"); """
 js_ast = js_parser.parse(js_func_closure, lexer=js_lexer)
-print js_ast
+#print js_ast
 print interpret_js(js_ast)
+
+js_func_closure_neg = """
+function makeGreeting(salutation) {
+  var punc = "!";
+  var greeting = function(person) {
+    write(salutation);
+    write(person + punc);
+  };
+  return greeting;
+}
+var greet = makeGreeting("ciao");
+var salutation = "yo";
+greet("meg"); """
+js_ast = js_parser.parse(js_func_closure_neg, lexer=js_lexer)
+#print js_ast
+print interpret_js(js_ast)
+
+script_closure = """
+<html>
+<script type="text/javascript">
+function makeGreeting(salutation) {
+  var punc = "!";
+  var greeting = function(person) {
+    write(salutation);
+    write(person + punc);
+  };
+  return greeting;
+}
+var greet = makeGreeting("ciao");
+greet("meg");
+</script>
+</html> """
+html_ast = html_parser.parse(script_closure, lexer=html_lexer)
+#print html_ast
+interpret_html(html_ast)

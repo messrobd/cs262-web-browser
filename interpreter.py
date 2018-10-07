@@ -10,32 +10,22 @@ js_parser = yacc.yacc(module=js_parser)
 html_lexer = lex.lex(module=html_lexer)
 html_parser = yacc.yacc(module=html_parser)
 
-#helper proc to simplify eval_exp()
-def perform_binop(x, operator, y):
-    if operator == '||':
-        return x or y
-    elif operator == '&&':
-        return x and y
-    elif operator == '==':
-        return x == y
-    elif operator == '<':
-        return x < y
-    elif operator == '>':
-        return x > y
-    elif operator == '<=':
-        return x <= y
-    elif operator == '>=':
-        return x >= y
-    elif operator == '+':
-        return x + y
-    elif operator == '-':
-        return x - y
-    elif operator == '*':
-        return x * y
-    elif operator == '/':
-        return x / y
-    elif operator == '%':
-        return x % y
+# helper dictionary to simplify eval_exp()
+binops = {
+    '||': lambda a, b: a or b,
+    '&&': lambda a, b: a and b,
+    '==': lambda a, b: a == b,
+    '<': lambda a, b: a < b,
+    '>': lambda a, b: a > b,
+    '<=': lambda a, b: a <= b,
+    '>=': lambda a, b: a >= b,
+    '+': lambda a, b: a + b,
+    '-': lambda a, b: a - b,
+    '*': lambda a, b: a * b,
+    '/': lambda a, b: a / b,
+    '%': lambda a, b: a % b
+}
+
 
 # helper proc to look up variables. begins in the current env frame, bubbles up to global
 def env_lookup(vname, environment):
@@ -73,7 +63,8 @@ def eval_exp(tree, environment):
         (left_child, operator, right_child) = tree[1:]
         x = eval_exp(left_child, environment)
         y = eval_exp(right_child, environment)
-        return perform_binop(x, operator, y)
+        binop = binops[operator]
+        return binop(x, y)
     elif exp_type == "identifier":
         vname = tree[1]
         value = env_lookup(vname, environment)
@@ -102,6 +93,11 @@ def eval_exp(tree, environment):
                     eval_stmts(fbody, new_environment)
                     return None
                 except Exception as return_value:
+                    # return_value has <type 'exceptions.Exception'> which
+                    # messed up declare(). args, defined in the raise
+                    # statement, are a tuple, inside which the values are
+                    # properly typed. return from that instead; luckily, we
+                    # know there is only ever 1 element
                     return return_value.args[0]
         else:
             print  "ERROR: call to non-function"
